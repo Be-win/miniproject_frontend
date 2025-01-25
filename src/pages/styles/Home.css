@@ -1,0 +1,44 @@
+/* Reset body and html to full width */
+html, body, #root, .home-page {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Ensure Carousel spans full width */
+.carousel, .carousel-item, .carousel-item img {
+    width: 100%;
+    height: 500px; /* Adjust height as needed */
+    object-fit: cover;
+}
+
+/* Carousel caption styling */
+.carousel-caption {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Card hover effect */
+.card {
+    transition: transform 0.3s ease;
+    border-radius: 32px;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+/* Card image styling */
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-radius: 32px 32px 0 0;
+}
+
+/* Section headings */
+h2 {
+    color: #2c3e50;
+    font-weight: bold;
+}

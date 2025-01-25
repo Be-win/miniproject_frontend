@@ -2,6 +2,7 @@ import 'react';
 import PropTypes from "prop-types";
 import { Navbar, Nav, Container, NavDropdown, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import './styles/Navbar.css'; // Import your custom CSS file
 
 const CustomNavbar = ({ isLoggedIn, user, onLogout }) => {
     const navigate = useNavigate();
@@ -19,9 +20,8 @@ const CustomNavbar = ({ isLoggedIn, user, onLogout }) => {
         navigate("/login");
     };
 
-
     return (
-        <Navbar expand="lg" bg="light" fixed="top">
+        <Navbar expand="lg" bg="light" fixed="top" className="custom-navbar">
             <Container>
                 {/* Logo Section */}
                 <Navbar.Brand href="/home">🌱 Community Garden</Navbar.Brand>
@@ -49,6 +49,7 @@ const CustomNavbar = ({ isLoggedIn, user, onLogout }) => {
                                     </>
                                 }
                                 id="user-dropdown"
+                                className="user-dropdown"
                             >
                                 <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                                 <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
@@ -56,7 +57,7 @@ const CustomNavbar = ({ isLoggedIn, user, onLogout }) => {
                             </NavDropdown>
                         ) : (
                             <Nav.Link href="/login">
-                                <Button variant="outline-success">Login</Button>
+                                <Button variant="outline-success" size="sm" className="login-button">Login</Button>
                             </Nav.Link>
                         )}
                     </Nav>

@@ -1,0 +1,11 @@
+/* Custom styles for profile picture */
+.profile-pic {
+    position: absolute;
+    width: 52px;
+    height: 52px;
+    left: 1593px;
+    top: calc(50% - 52px/2 - 500px);
+
+    background: url(.jpg), #D9D9D9;
+
+}

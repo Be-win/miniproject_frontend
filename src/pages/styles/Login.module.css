@@ -1,4 +1,4 @@
-.signup-page {
+.login-page {
     display: flex;
     height: 100vh;
     width: 100vw;
@@ -9,26 +9,34 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centers content vertically */
-    align-items: center; /* Centers content horizontally */
+    justify-content: center;
+    align-items: center;
     background-color: #fff;
     padding: 2rem;
 }
 
-h1 {
+.login-heading {
     align-self: flex-start;
     font-size: 2rem;
-    margin-bottom: 2rem;
     color: black;
+    margin: 0;
+}
+
+.login-description {
+    align-self: flex-start;
+    font-weight: 500;
+    font-size: 1rem;
+    color: black;
+    margin-bottom: 3rem;
 }
 
 .form-content {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centers the form elements vertically */
-    align-items: center; /* Centers the form elements horizontally */
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    max-width: 400px; /* Restricts the form width */
+    max-width: 400px;
     background-color: #fff;
 }
 
@@ -38,14 +46,13 @@ h1 {
 }
 
 .form-group label {
-    display: inline-flex; /* Ensures checkbox and text are on the same line */
-    align-items: center; /* Aligns checkbox and text vertically */
-    gap: 0.5rem; /* Adds space between the checkbox and the text */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 1rem;
     color: #333;
 }
 
-.form-group input[type="text"],
 .form-group input[type="email"],
 .form-group input[type="password"] {
     width: 23rem;
@@ -59,40 +66,40 @@ h1 {
     background-color: #fff;
 }
 
-.form-group label.checkbox-label {
-    display: inline-flex; /* Keeps the checkbox and label text on one line */
-    align-items: center; /* Vertically aligns the checkbox and text */
-    gap: 0.5rem; /* Adds space between the checkbox and text */
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 1rem;
     color: #333;
-    white-space: nowrap; /* Prevents the text from wrapping to the next line */
+    white-space: nowrap;
 }
 
 .form-group input[type="checkbox"] {
-    appearance: none; /* Removes default browser styling */
+    appearance: none;
     width: 20px;
     height: 20px;
-    border-radius: 4px; /* Custom radius for the checkbox */
-    border: 2px solid #ccc; /* Gray border for unchecked state */
-    background-color: #fff; /* White background for unchecked state */
-    transition: all 0.3s ease-in-out; /* Smooth transition */
+    border-radius: 4px;
+    border: 2px solid #ccc;
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
     cursor: pointer;
-    position: relative; /* Required for the pseudo-element */
+    position: relative;
 }
 
 .form-group input[type="checkbox"]:checked {
-    background-color: #B1D289; /* Green background for checked state */
-    border-color: #B1D289; /* Match border color with background */
+    background-color: #B1D289;
+    border-color: #B1D289;
 }
 
 .form-group input[type="checkbox"]:checked::after {
-    content: "✔"; /* Checkmark */
+    content: "✔";
     font-size: 12px;
-    color: #fff; /* White checkmark */
-    position: absolute; /* Position relative to the checkbox */
+    color: #fff;
+    position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Center the checkmark */
+    transform: translate(-50%, -50%);
 }
 
 .signup-button {
@@ -146,9 +153,9 @@ h1 {
 
 .google-button,
 .apple-button {
-    display: flex; /* Use flexbox for alignment */
-    align-items: center; /* Align items vertically */
-    justify-content: center; /* Center items horizontally */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 0.9rem;
     color: #000;
     background-color: #f5f5f5;
@@ -156,7 +163,7 @@ h1 {
     border-radius: 12px;
     cursor: pointer;
     text-align: center;
-    gap: 0.5rem; /* Add space between the SVG and text */
+    gap: 0.5rem;
 }
 
 .google-button:hover,
@@ -166,8 +173,8 @@ h1 {
 }
 
 .google-button svg {
-    width: 20px; /* Set consistent width */
-    height: 20px; /* Set consistent height */
+    width: 20px;
+    height: 20px;
 }
 
 .signin-link {
@@ -194,4 +201,9 @@ h1 {
     width: 100%;
     height: auto;
     object-fit: cover;
+}
+
+.error-message {
+    margin-top: 0.5rem;
+    color: #ff4646;
 }

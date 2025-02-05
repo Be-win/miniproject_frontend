@@ -1,0 +1,225 @@
+/* General Styles */
+.sustainabilityDashboard {
+    background-color: #F4F3F2;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    margin-top: 55px;
+}
+
+.sustainabilityDashboard h1 {
+    font-size: 2.5rem;
+    color: #2C5F2D;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+/* Error and Success Messages */
+.errorMessage {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.successMessage {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Topic of the Day */
+.topicOfTheDay {
+    background-color: #B1D289;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.topicOfTheDay h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #2C5F2D;
+}
+
+/* Article Form */
+.articleForm {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.articleForm input[type="text"],
+.articleForm textarea {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 2px solid #B1D289;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.articleForm input[type="text"]:focus,
+.articleForm textarea:focus {
+    outline: none;
+    border-color: #2C5F2D;
+    box-shadow: 0 0 0 3px rgba(177, 210, 137, 0.3);
+}
+
+.articleForm button {
+    background-color: #B1D289;
+    color: #2C5F2D;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.articleForm button:hover {
+    background-color: #9bbf7a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.articleForm button:disabled {
+    background-color: #D3E8C1;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Top Articles */
+.topArticles {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.article {
+    background-color: #F4F3F2;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.article:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.article h3 {
+    color: #2C5F2D;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.article p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.article button {
+    background-color: #B1D289;
+    color: #2C5F2D;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.article button:hover {
+    background-color: #9bbf7a;
+}
+
+/* Show More/Less Button */
+.showMoreBtn {
+    display: block;
+    width: fit-content;
+    margin: 2rem auto 0;
+    padding: 0.8rem 2rem;
+    background-color: #B1D289;
+    color: #2C5F2D;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.showMoreBtn:hover {
+    background-color: #9bbf7a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sustainabilityDashboard {
+        padding: 1rem;
+        margin-top: 50px;
+    }
+
+    .sustainabilityDashboard h1 {
+        font-size: 2rem;
+    }
+
+    .topicOfTheDay h2 {
+        font-size: 1.5rem;
+    }
+
+    .articleForm,
+    .topArticles {
+        padding: 1.5rem;
+    }
+
+    .articleForm button,
+    .showMoreBtn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .sustainabilityDashboard h1 {
+        font-size: 1.8rem;
+    }
+
+    .articleForm input[type="text"],
+    .articleForm textarea {
+        font-size: 0.9rem;
+    }
+
+    .articleForm button,
+    .showMoreBtn {
+        padding: 0.8rem;
+    }
+}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./styles/Login.css";
+import styles from "./styles/Login.module.css";
 import backgroundImage from "../assets/login-background-img.png";
 import { useNavigate } from "react-router-dom";
 
@@ -49,15 +49,15 @@ const Login = ({ setUser }) => {
     };
 
     return (
-        <div className="login-page">
-            <div className="form-container">
-                <div className="form-content">
-                    <h1 className="login-heading">Welcome back!</h1>
-                    <h2 className="login-description">
+        <div className={styles['login-page']}>
+            <div className={styles['form-container']}>
+                <div className={styles['form-content']}>
+                    <h1 className={styles['login-heading']}>Welcome back!</h1>
+                    <h2 className={styles['login-description']}>
                         Enter your credentials to access your account
                     </h2>
                     <form onSubmit={handleSubmit}>
-                        <div className="form-group">
+                        <div className={styles['form-group']}>
                             <label htmlFor="email">Email address</label>
                             <input
                                 type="email"
@@ -69,7 +69,7 @@ const Login = ({ setUser }) => {
                                 required
                             />
                         </div>
-                        <div className="form-group">
+                        <div className={styles['form-group']}>
                             <label htmlFor="password">Password</label>
                             <input
                                 type="password"
@@ -81,22 +81,22 @@ const Login = ({ setUser }) => {
                                 required
                             />
                         </div>
-                        <div className="form-group">
-                            <label className="checkbox-label" htmlFor="terms">
+                        <div className={styles['form-group']}>
+                            <label className={styles['checkbox-label']} htmlFor="terms">
                                 <input type="checkbox" />
                                 Remember for 30 days
                             </label>
                         </div>
-                        <button type="submit" className="signup-button">
+                        <button type="submit" className={styles['signup-button']}>
                             Login
                         </button>
                     </form>
                     {errorMessage && (
-                        <div className="error-message">{errorMessage}</div>
+                        <div className={styles['error-message']}>{errorMessage}</div>
                     )}
-                    <div className="separator">Or</div>
-                    <div className="social-buttons">
-                        <button className="google-button">
+                    <div className={styles.separator}>Or</div>
+                    <div className={styles['social-buttons']}>
+                        <button className={styles['google-button']}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 x="0px"
@@ -124,7 +124,7 @@ const Login = ({ setUser }) => {
                             </svg>
                             Sign in with Google
                         </button>
-                        <button className="apple-button">
+                        <button className={styles['apple-button']}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 x="0px"
@@ -139,11 +139,11 @@ const Login = ({ setUser }) => {
                         </button>
                     </div>
                 </div>
-                <p className="signin-link">
+                <p className={styles['signin-link']}>
                     Don&#39;t have an account? <a href="/Signup">Sign Up</a>
                 </p>
             </div>
-            <div className="image-container">
+            <div className={styles['image-container']}>
                 <img src={backgroundImage} alt="Signup page decoration" />
             </div>
         </div>

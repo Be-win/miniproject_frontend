@@ -1,0 +1,197 @@
+.signupPage {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-color: #ffffff;
+}
+
+.formContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    padding: 2rem;
+}
+
+.formContainer h1 {
+    align-self: flex-start;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: black;
+}
+
+.formContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    background-color: #fff;
+}
+
+.formGroup {
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.formGroup label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: #333;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="email"],
+.formGroup input[type="password"] {
+    width: 23rem;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    outline: none;
+    margin-bottom: 0.5rem;
+    color: #333;
+    background-color: #fff;
+}
+
+.checkboxLabel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: #333;
+    white-space: nowrap;
+}
+
+.formGroup input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 2px solid #ccc;
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    position: relative;
+}
+
+.formGroup input[type="checkbox"]:checked {
+    background-color: #B1D289;
+    border-color: #B1D289;
+}
+
+.formGroup input[type="checkbox"]:checked::after {
+    content: "✔";
+    font-size: 12px;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.signupButton {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #B1D289;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.separator {
+    text-align: center;
+    width: 100%;
+    margin: 2rem 0;
+    font-size: 0.9rem;
+    color: #aaa;
+    position: relative;
+}
+
+.separator:before,
+.separator:after {
+    content: '';
+    display: block;
+    height: 1px;
+    background: #ddd;
+    width: 45%;
+    position: absolute;
+    top: 50%;
+}
+
+.separator:before {
+    left: 0;
+}
+
+.separator:after {
+    right: 0;
+}
+
+.socialButtons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.5rem;
+}
+
+.googleButton,
+.appleButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: #000;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.googleButton:hover,
+.appleButton:hover {
+    background-color: #b1d289;
+    border: 1px solid #ccc;
+}
+
+.googleButton svg {
+    width: 20px;
+    height: 20px;
+}
+
+.signinLink {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.signinLink a {
+    color: #4a90e2;
+    text-decoration: none;
+}
+
+.imageContainer {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+}
+
+.imageContainer img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}

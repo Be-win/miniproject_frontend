@@ -1,14 +1,16 @@
 import { useState } from "react";
-import "./styles/Signup.css";
+import styles from "./styles/Signup.module.css"; // Import the CSS Module
 import backgroundImage from "../assets/login-background-img.png";
 import { useNavigate } from "react-router-dom";
 
-const Signup = () => {
+// eslint-disable-next-line react/prop-types
+const Signup = ({ setUser }) => {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: "",
     });
+    const [errorMessage, setErrorMessage] = useState("");
 
     const navigate = useNavigate();
 
@@ -30,32 +32,37 @@ const Signup = () => {
             });
 
             const result = await response.json();
+            console.log(result);
 
             if (response.ok) {
-                // Assuming the server returns a JWT token in the response
-                const { token } = result;
+                // Save the JWT token to localStorage
+                localStorage.setItem('token', result.token);
 
-                // Store the token in localStorage or sessionStorage (or handle as needed)
-                localStorage.setItem('jwt', token);
+                // Update the user state (if using a global state management solution)
+                setUser({
+                    id: result.user.id,
+                    name: result.user.name,
+                    email: result.user.email,
+                });
 
-                alert('Signup successful! Redirecting to home page...');
+                // Redirect to the home page
                 navigate("/");
             } else {
-                alert(result.message || 'Signup failed. Please try again.');
+                setErrorMessage(result.error || "Signup failed. Please try again.");
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('An error occurred while signing up.');
+            setErrorMessage('An error occurred while signing up.');
         }
     };
 
     return (
-        <div className="signup-page">
-            <div className="form-container">
-                <div className="form-content">
+        <div className={styles.signupPage}>
+            <div className={styles.formContainer}>
+                <div className={styles.formContent}>
                     <h1>Get Started Now</h1>
                     <form onSubmit={handleSubmit}>
-                        <div className="form-group">
+                        <div className={styles.formGroup}>
                             <label htmlFor="name">Name</label>
                             <input
                                 type="text"
@@ -67,7 +74,7 @@ const Signup = () => {
                                 required
                             />
                         </div>
-                        <div className="form-group">
+                        <div className={styles.formGroup}>
                             <label htmlFor="email">Email address</label>
                             <input
                                 type="email"
@@ -79,7 +86,7 @@ const Signup = () => {
                                 required
                             />
                         </div>
-                        <div className="form-group">
+                        <div className={styles.formGroup}>
                             <label htmlFor="password">Password</label>
                             <input
                                 type="password"
@@ -91,17 +98,20 @@ const Signup = () => {
                                 required
                             />
                         </div>
-                        <div className="form-group">
-                            <label className="checkbox-label" htmlFor="terms">
+                        <div className={styles.formGroup}>
+                            <label className={styles.checkboxLabel} htmlFor="terms">
                                 <input type="checkbox" required />
                                 I agree to the terms & policy
                             </label>
                         </div>
-                        <button type="submit" className="signup-button">Signup</button>
+                        <button type="submit" className={styles.signupButton}>Signup</button>
                     </form>
-                    <div className="separator">Or</div>
-                    <div className="social-buttons">
-                        <button className="google-button">
+                    {errorMessage && (
+                        <div className={styles.errorMessage}>{errorMessage}</div>
+                    )}
+                    <div className={styles.separator}>Or</div>
+                    <div className={styles.socialButtons}>
+                        <button className={styles.googleButton}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 x="0px"
@@ -129,7 +139,7 @@ const Signup = () => {
                             </svg>
                             Sign in with Google
                         </button>
-                        <button className="apple-button">
+                        <button className={styles.appleButton}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 x="0px"
@@ -144,11 +154,11 @@ const Signup = () => {
                         </button>
                     </div>
                 </div>
-                <p className="signin-link">
+                <p className={styles.signinLink}>
                     Have an account? <a href="/Login">Sign In</a>
                 </p>
             </div>
-            <div className="image-container">
+            <div className={styles.imageContainer}>
                 <img
                     src={backgroundImage}
                     alt="Signup page decoration"

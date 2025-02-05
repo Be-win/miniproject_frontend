@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "../App.jsx";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
+import SustainabilityDashboard from "../pages/SustainabilityDashboard";
+import GardenProfile from "../pages/GardenProfile";
+import Navbar from "./Navbar.jsx";
 
 const MainComponent = () => {
     // State to manage user information
@@ -26,8 +29,11 @@ const MainComponent = () => {
             <Routes>
                 <Route path="/" element={<App user={user} setUser={setUser} />} />
                 <Route path="/home" element={<App user={user} setUser={setUser} />} />
+                <Route path="/navbar" element={<Navbar user={user} setUser={setUser} />} />
                 <Route path="/login" element={<Login setUser={setUser} />} />
-                <Route path="/signup" element={<Signup />} />
+                <Route path="/signup" element={<Signup setUser={setUser} />} />
+                <Route path="/sustainabilitydashboard" element={<SustainabilityDashboard user={user}/>} />
+                <Route path="/gardenProfile" element={<GardenProfile user={user}/>} />
             </Routes>
         </BrowserRouter>
     );

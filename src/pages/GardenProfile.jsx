@@ -16,7 +16,7 @@ const GardenProfilePage = ({ user }) => {
     useEffect(() => {
         const fetchGardenDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/gardens/${id}`);
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/garden/${id}`);
                 if (!response.ok) {
                     throw new Error("Failed to fetch garden details.");
                 }
@@ -41,14 +41,12 @@ const GardenProfilePage = ({ user }) => {
     }
 
     // Calculate remaining land based on total and allocated values.
-    // This example assumes total_land represents 100% of the land.
     const allocated = garden.allocated_land;
     const total = garden.total_land;
-    const remaining = total > 0 ? total - allocated : 0;
 
     return (
         <div>
-            <Navbar isLoggedIn={!!user} user={user}/>
+            <Navbar isLoggedIn={!!user} user={user} />
             <div className={styles.gardenProfile}>
                 <h1>{garden.name}</h1>
                 <p>{garden.description}</p>
@@ -56,14 +54,18 @@ const GardenProfilePage = ({ user }) => {
                     <strong>Address:</strong> {garden.address}
                 </p>
 
-                {/* Display the garden location on a map */}
-                <GardenMap location={garden.location} />
+                {/* Ensure longitude and latitude are available before rendering the map */}
+                {garden.longitude && garden.latitude ? (
+                    <GardenMap longitude={garden.longitude} latitude={garden.latitude} />
+                ) : (
+                    <p>Location data not available</p>
+                )}
 
                 {/* Display the gallery of images */}
                 <GardenGallery images={garden.images} />
 
                 {/* Display land allocation */}
-                <LandAllocation allocated={allocated} remaining={remaining} />
+                <LandAllocation allocated={allocated} totalLand={total} />
             </div>
             <Footer />
         </div>

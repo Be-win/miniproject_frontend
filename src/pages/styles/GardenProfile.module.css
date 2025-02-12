@@ -1,31 +1,24 @@
 .gardenProfile {
+    max-width: 1000px;
+    margin: 56px auto;
     padding: 20px;
-}
-
-.imageGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
-}
-
-.imageItem img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-}
-
-.progressBar {
     display: flex;
-    height: 20px;
-    background-color: #e0e0e0;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.gardenProfile h1 {
+    text-align: center;
+}
+
+.gardenProfile p {
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.gardenProfile section {
+    padding: 15px;
+    background: #fff;
     border-radius: 10px;
-    overflow: hidden;
-}
-
-.progressAllocated {
-    background-color: #4caf50;
-}
-
-.progressRemaining {
-    background-color: #f44336;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }

@@ -1,0 +1,57 @@
+.gardenGallery {
+    margin: 40px 0;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for the gallery title */
+.gardenGallery h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid #4caf50;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* Grid layout for the images */
+.imageGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+/* Individual image card styling */
+.imageItem {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effect for image cards */
+.imageItem:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for images inside the cards */
+.imageItem img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Styling for the image metadata (uploaded date) */
+.imageItem p {
+    padding: 10px;
+    margin: 0;
+    font-size: 0.9rem;
+    color: #555;
+    text-align: center;
+}

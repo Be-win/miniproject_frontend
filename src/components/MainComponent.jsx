@@ -4,6 +4,7 @@ import App from "../App.jsx";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import SustainabilityDashboard from "../pages/SustainabilityDashboard";
+import GardenDirectory from "../pages/GardenDirectory/GardenDirectory";
 import GardenProfile from "../pages/GardenProfile";
 import Navbar from "./Navbar.jsx";
 
@@ -33,7 +34,8 @@ const MainComponent = () => {
                 <Route path="/login" element={<Login setUser={setUser} />} />
                 <Route path="/signup" element={<Signup setUser={setUser} />} />
                 <Route path="/sustainabilitydashboard" element={<SustainabilityDashboard user={user}/>} />
-                <Route path="/gardenProfile" element={<GardenProfile user={user}/>} />
+                <Route path="/directory" element={<GardenDirectory user={user}/>} />
+                <Route path="/gardenProfile/:id" element={<GardenProfile user={user}/>} />
             </Routes>
         </BrowserRouter>
     );

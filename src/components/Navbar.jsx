@@ -10,8 +10,10 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
     // Logout handler
     const handleLogout = () => {
         // Clear user session and authentication token
-        localStorage.removeItem("token"); // Remove auth token
-        localStorage.removeItem("user"); // Remove user data (if you store it in localStorage)
+        //localStorage.removeItem("token"); // Remove auth token
+        //localStorage.removeItem("user"); // Remove user data (if you store it in localStorage)
+        localStorage.clear();
+        sessionStorage.clear();
 
         // Call any additional logout functionality passed as props
         if (onLogout) onLogout();

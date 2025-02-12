@@ -62,6 +62,8 @@ const ArticleForm = ({ onSubmit }) => {
 const ArticleList = ({ articles, onUpvote, showAll, toggleShowAll, isLoading }) => {
     if (isLoading) return <p>Loading Articles...</p>;
 
+    const upvotedArticles = JSON.parse(sessionStorage.getItem("upvotedArticles")) || [];
+
     const validArticles = Array.isArray(articles) ? articles : [];
     if (validArticles.length === 0) return <p>No articles found.</p>;
 
@@ -71,11 +73,15 @@ const ArticleList = ({ articles, onUpvote, showAll, toggleShowAll, isLoading }) 
             {validArticles.slice(0, showAll ? validArticles.length : 10).map((article) => (
                 <div key={article.id} className={styles.article}>
                     <h3>{article.title}</h3>
-                    <div style={{whiteSpace: 'pre-wrap'}}>
+                    <div style={{ whiteSpace: 'pre-wrap' }}>
                         <p>{article.content}</p>
                     </div>
-                    <button onClick={() => onUpvote(article.id)}>
-                        Upvote ({article.upvotes || 0})
+                    <button
+                        onClick={() => onUpvote(article.id)}
+                        disabled={upvotedArticles.includes(article.id)}
+                        style={{ backgroundColor: upvotedArticles.includes(article.id) ? "#ccc" : "" }}
+                    >
+                        {upvotedArticles.includes(article.id) ? "Upvoted" : `Upvote (${article.upvotes || 0})`}
                     </button>
                 </div>
             ))}
@@ -87,6 +93,7 @@ const ArticleList = ({ articles, onUpvote, showAll, toggleShowAll, isLoading }) 
         </div>
     );
 };
+
 
 const SustainabilityDashboard = ({ user }) => {
     const [topicOfTheDay, setTopicOfTheDay] = useState(null);
@@ -141,17 +148,30 @@ const SustainabilityDashboard = ({ user }) => {
     };
 
     const handleUpvote = (articleId) => {
+        // Get the list of upvoted articles from sessionStorage
+        const upvotedArticles = JSON.parse(sessionStorage.getItem("upvotedArticles")) || [];
+
+        // Check if the user has already upvoted this article
+        if (upvotedArticles.includes(articleId)) {
+            setError("You can only upvote an article once per session.");
+            return;
+        }
+
         axios
             .post(`${import.meta.env.VITE_API_BASE_URL}/sustainability/upvote-article/${articleId}`)
             .then((response) => {
-                const updatedArticle = response.data.article; // Use the updated article object
+                const updatedArticle = response.data.article;
                 const updatedArticles = articles.map((article) =>
                     article.id === articleId ? updatedArticle : article
                 );
                 setArticles(updatedArticles);
+
+                // Store the upvoted article ID in sessionStorage
+                sessionStorage.setItem("upvotedArticles", JSON.stringify([...upvotedArticles, articleId]));
             })
             .catch(() => setError("Failed to upvote the article."));
     };
+
 
     return (
         <ErrorBoundary>

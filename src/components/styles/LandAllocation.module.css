@@ -1,0 +1,51 @@
+/* LandAllocation.module.css */
+
+/* Container for the land allocation section */
+.landAllocation {
+    margin: 40px 0;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Title styling */
+.landAllocation h2 {
+    font-size: 1.8rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* Paragraph styling for allocated and remaining percentages */
+.landAllocation p {
+    font-size: 1rem;
+    color: #555;
+    margin: 10px 0;
+    text-align: center;
+}
+
+/* Progress bar container styling */
+.progressBar {
+    display: flex;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+/* Filled part representing allocated land */
+.progressAllocated {
+    background-color: #4caf50;
+    transition: width 0.3s ease;
+}
+
+/* Filled part representing remaining land */
+.progressRemaining {
+    background-color: #f44336;
+    transition: width 0.3s ease;
+}

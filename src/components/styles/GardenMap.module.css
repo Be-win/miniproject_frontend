@@ -1,0 +1,14 @@
+.mapContainer {
+    height: 400px;
+    width: 100%;
+    border: 2px solid #4caf50;  /* Accent green border */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    margin: 20px 0;
+}
+
+/* Ensure the internal Leaflet map inherits the rounded corners */
+.leaflet-container {
+    border-radius: 10px;
+}

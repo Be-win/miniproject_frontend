@@ -1,9 +1,13 @@
 import React from "react";
+import styles from "./styles/LandAllocation.module.css";
 
-const LandAllocation = ({ allocated, remaining }) => {
-    // Ensure values are within 0 to 100 for display purposes
-    const allocatedPercentage = Math.min(Math.max(allocated, 0), 100);
-    const remainingPercentage = Math.min(Math.max(remaining, 0), 100);
+const LandAllocation = ({ allocated, totalLand }) => {
+    const remaining = totalLand  - allocated;
+    const allocatedPercentage = totalLand > 0 ? (allocated / totalLand) * 100 : 0;
+    const remainingPercentage = 100 - allocatedPercentage;
+    console.log(allocatedPercentage);
+    console.log(remainingPercentage);
+
 
     return (
         <div className={styles.landAllocation}>

@@ -1,3 +1,9 @@
+// @ts-ignore
+import type React from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card"
+import { Badge } from "../../../components/ui/badge"
+import { MapPin } from "lucide-react"
+
 type GardenCardProps = {
     garden: {
         name: string
@@ -6,17 +12,25 @@ type GardenCardProps = {
     }
 }
 
-export default function GardenCard({ garden }: GardenCardProps) {
+const GardenCard: React.FC<GardenCardProps> = ({ garden }) => {
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105">
-            <div className="p-6">
-                <h2 className="text-xl font-semibold mb-2">{garden.name}</h2>
-                <p className="text-gray-600 mb-2">{garden.address}</p>
-                <span className="inline-block bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm font-semibold">
-          {garden.type}
-        </span>
-            </div>
-        </div>
+        // Add both "garden-card" for focus styling and "garden-card-hover" for the hover effect.
+        <Card className="garden-card garden-card-hover">
+            <CardHeader>
+                <CardTitle>{garden.name}</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="flex items-start mb-2">
+                    <MapPin className="w-4 h-4 mr-2 mt-1 flex-shrink-0" />
+                    <p className="text-sm text-gray-600">{garden.address}</p>
+                </div>
+                {/* Add the custom badge class */}
+                <Badge className="garden-type-badge" variant="secondary">
+                    {garden.type}
+                </Badge>
+            </CardContent>
+        </Card>
     )
 }
 
+export default GardenCard

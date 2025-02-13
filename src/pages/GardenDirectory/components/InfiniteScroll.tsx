@@ -1,8 +1,6 @@
-"use client"
-
-import { useEffect, useRef } from "react"
 // @ts-ignore
-import type React from "react" // Added import for React
+import type React from "react"
+import { useEffect, useRef, useCallback } from "react"
 
 type InfiniteScrollProps = {
     loadMore: () => void
@@ -10,18 +8,25 @@ type InfiniteScrollProps = {
     children: React.ReactNode
 }
 
-export default function InfiniteScroll({ loadMore, hasMore, children }: InfiniteScrollProps) {
-    const observerTarget = useRef(null)
+const InfiniteScroll: React.FC<InfiniteScrollProps> = ({ loadMore, hasMore, children }) => {
+    const observerTarget = useRef<HTMLDivElement>(null)
+
+    const handleObserver = useCallback(
+        (entries: IntersectionObserverEntry[]) => {
+            const [target] = entries
+            if (target.isIntersecting && hasMore) {
+                loadMore()
+            }
+        },
+        [loadMore, hasMore],
+    )
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && hasMore) {
-                    loadMore()
-                }
-            },
-            { threshold: 1.0 },
-        )
+        const observer = new IntersectionObserver(handleObserver, {
+            root: null,
+            rootMargin: "20px",
+            threshold: 1.0,
+        })
 
         if (observerTarget.current) {
             observer.observe(observerTarget.current)
@@ -32,13 +37,14 @@ export default function InfiniteScroll({ loadMore, hasMore, children }: Infinite
                 observer.unobserve(observerTarget.current)
             }
         }
-    }, [loadMore, hasMore])
+    }, [handleObserver])
 
     return (
         <>
             {children}
-            <div ref={observerTarget} style={{ height: "10px" }} />
+            <div ref={observerTarget} className="infinite-scroll-loader" />
         </>
     )
 }
 
+export default InfiniteScroll

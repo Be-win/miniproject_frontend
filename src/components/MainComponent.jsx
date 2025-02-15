@@ -7,6 +7,8 @@ import SustainabilityDashboard from "../pages/SustainabilityDashboard";
 import GardenDirectory from "../pages/GardenDirectory/GardenDirectory";
 import GardenProfile from "../pages/GardenProfile";
 import Navbar from "./Navbar.jsx";
+import CreateGarden from "../pages/GardenDirectory/CreateGarden";
+import Test from "../pages/test.jsx"
 
 const MainComponent = () => {
     // State to manage user information
@@ -28,6 +30,7 @@ const MainComponent = () => {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/test" element={<Test />} />
                 <Route path="/" element={<App user={user} setUser={setUser} />} />
                 <Route path="/home" element={<App user={user} setUser={setUser} />} />
                 <Route path="/navbar" element={<Navbar user={user} setUser={setUser} />} />
@@ -36,6 +39,8 @@ const MainComponent = () => {
                 <Route path="/sustainabilitydashboard" element={<SustainabilityDashboard user={user}/>} />
                 <Route path="/directory" element={<GardenDirectory user={user}/>} />
                 <Route path="/gardenProfile/:id" element={<GardenProfile user={user}/>} />
+                <Route path="directory/gardenProfile/:id" element={<GardenProfile user={user}/>} />
+                <Route path="directory/createGarden" element={<CreateGarden user={user}/>} />
             </Routes>
         </BrowserRouter>
     );

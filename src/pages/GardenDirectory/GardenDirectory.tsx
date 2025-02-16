@@ -137,7 +137,7 @@ const GardenDirectoryPage: React.FC<{ user: User | null }> = ({ user }) => {
                     {gardens.map((garden) => (
                         <div key={garden.id} className="garden-card" onClick={() => navigate(`gardenprofile/${garden.id}`)}>
                             <img
-                                src={garden.image_url || "/default-garden.jpg"}
+                                src={garden.image_url || "https://placehold.co/600x400?text=No+Image"}
                                 alt={garden.name}
                                 className="garden-image"
                             />

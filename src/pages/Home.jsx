@@ -1,108 +1,159 @@
-import 'react';
-import { Carousel, Container, Row, Col, Card } from 'react-bootstrap';
-import './styles/Home.css'; // Import your CSS file for styling
-import ExampleImage from '../assets/ExampleCarouselImage.jpg';
-import ExampleImage2 from '../assets/ExampleCarouselImage2.jpg';
-import ExampleImage3 from '../assets/ExampleCarouselImage3.jpg';
+import React, { useState, useEffect } from 'react';
+import { Carousel, Container, Row, Col, Card, Spinner, Alert } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import './styles/Home.css';
+import CarouselImage1 from '../assets/carousel-image-1.jpg'
+import CarouselImage2 from '../assets/carousel-image-2.jpeg'
 
 const Home = () => {
-    // Dummy data for gardens near you (replace with real data later)
-    const gardensNearYou = [
-        { id: 1, name: "Green Valley Garden", image: ExampleImage },
-        { id: 2, name: "Sunny Meadows Garden", image: ExampleImage2 },
-        { id: 3, name: "Urban Oasis Garden", image: ExampleImage3 },
-        { id: 4, name: "Harmony Park Garden", image: ExampleImage },
-    ];
+    const [gardens, setGardens] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchGardens = async () => {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/garden?limit=4`);
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to fetch gardens');
+                }
+
+                const { data } = await response.json();
+                setGardens(data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchGardens();
+    }, []);
+
+    const handleGardenClick = (gardenId) => {
+        navigate(`/gardenprofile/${gardenId}`);
+    };
 
     return (
-        <div>
-            {/* Image Carousel */}
-            <Carousel>
+        <div className="home-page">
+            {/* Hero Carousel */}
+            <Carousel fade>
                 <Carousel.Item>
                     <img
-                        className="d-block w-100"
-                        src={ExampleImage}
-                        alt="First slide"
+                        className="d-block w-100 carousel-image"
+                        src={CarouselImage1}
+                        alt="Community Gardening"
                     />
                     <Carousel.Caption>
-                        <h3>Welcome to Community Garden</h3>
-                        <p>Join hands to grow a greener future.</p>
+                        <h1>Welcome to Willow & Thrive Community</h1>
+                        <p>Connect, Grow, and Share with Local Gardeners</p>
                     </Carousel.Caption>
                 </Carousel.Item>
                 <Carousel.Item>
                     <img
-                        className="d-block w-100"
-                        src={ExampleImage2}
-                        alt="Second slide"
+                        className="d-block w-100 carousel-image"
+                        src={CarouselImage2}
+                        alt="Vegetable Garden"
                     />
                     <Carousel.Caption>
-                        <h3>Discover Gardens Near You</h3>
-                        <p>Find and join local community gardens.</p>
-                    </Carousel.Caption>
-                </Carousel.Item>
-                <Carousel.Item>
-                    <img
-                        className="d-block w-100"
-                        src={ExampleImage3}
-                        alt="Third slide"
-                    />
-                    <Carousel.Caption>
-                        <h3>Volunteer and Learn</h3>
-                        <p>Sign up for gardening tasks and workshops.</p>
+                        <h2 className="carousel-heading2">Fresh Produce for Everyone</h2>
+                        <p>Join our community gardening movement</p>
                     </Carousel.Caption>
                 </Carousel.Item>
             </Carousel>
 
-            {/* Gardens Near You Section */}
-            <Container className="my-5">
-                <h2 className="text-center mb-4">Gardens Near You</h2>
-                <Row>
-                    {gardensNearYou.map((garden) => (
-                        <Col key={garden.id} md={3} sm={6} className="mb-4">
-                            <Card>
-                                <Card.Img variant="top" src={garden.image} />
-                                <Card.Body>
-                                    <Card.Title>{garden.name}</Card.Title>
-                                    <Card.Text>
-                                        Join this garden and contribute to the community.
-                                    </Card.Text>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
+            {/* Featured Gardens Section */}
+            <Container className="my-5 featured-gardens">
+                <h2 className="text-center mb-4">Featured Gardens</h2>
+
+                {loading ? (
+                    <div className="text-center my-5">
+                        <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                        <p className="mt-2">Loading gardens...</p>
+                    </div>
+                ) : error ? (
+                    <Alert variant="danger" className="text-center">
+                        {error}
+                    </Alert>
+                ) : (
+                    <Row>
+                        {gardens.map((garden) => (
+                            <Col
+                                key={garden.id}
+                                xs={12}
+                                md={6}
+                                lg={3}
+                                className="mb-4"
+                            >
+                                <Card
+                                    className="h-100 garden-card"
+                                    onClick={() => handleGardenClick(garden.id)}
+                                >
+                                    <Card.Img
+                                        variant="top"
+                                        src={garden.image_url || 'https://placehold.co/600x400?text=No+Image'}
+                                        alt={garden.name}
+                                        className="garden-image"
+                                    />
+                                    <Card.Body className="d-flex flex-column">
+                                        <Card.Title>{garden.name}</Card.Title>
+                                        <Card.Text className="flex-grow-1">
+                                            {garden.description?.substring(0, 100) || 'A community garden space'}
+                                            {garden.description?.length > 100 && '...'}
+                                        </Card.Text>
+                                        <small className="text-muted mt-auto">
+                                            <i className="bi bi-geo-alt"></i> {garden.address}
+                                        </small>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        ))}
+                    </Row>
+                )}
             </Container>
 
-            {/* Additional Sections (e.g., Forums, Events, etc.) */}
+            {/* Call to Action Sections */}
             <Container className="my-5">
-                <h2 className="text-center mb-4">Explore More</h2>
-                <Row>
-                    <Col md={4} className="mb-4">
-                        <Card>
+                <Row className="g-4">
+                    <Col md={4}>
+                        <Card className="h-100 info-card">
                             <Card.Body>
-                                <Card.Title>Forums</Card.Title>
+                                <Card.Title>
+                                    <i className="bi bi-people"></i> Join Our Community
+                                </Card.Title>
                                 <Card.Text>
-                                    Discuss gardening tips, share experiences, and ask questions.
+                                    Connect with local gardeners, share tips, and collaborate on projects.
                                 </Card.Text>
                             </Card.Body>
                         </Card>
                     </Col>
-                    <Col md={4} className="mb-4">
-                        <Card>
+
+                    <Col md={4}>
+                        <Card className="h-100 info-card">
                             <Card.Body>
-                                <Card.Title>Events</Card.Title>
+                                <Card.Title>
+                                    <i className="bi bi-calendar-event"></i> Upcoming Events
+                                </Card.Title>
                                 <Card.Text>
-                                    Join workshops, volunteer days, and harvest festivals.
+                                    Participate in workshops, plant swaps, and community harvest days.
                                 </Card.Text>
                             </Card.Body>
                         </Card>
                     </Col>
-                    <Col md={4} className="mb-4">
-                        <Card>
+
+                    <Col md={4}>
+                        <Card className="h-100 info-card">
                             <Card.Body>
-                                <Card.Title>Sustainability Tips</Card.Title>
+                                <Card.Title>
+                                    <i className="bi bi-book"></i> Learning Resources
+                                </Card.Title>
                                 <Card.Text>
-                                    Learn how to garden sustainably and reduce your carbon footprint.
+                                    Access guides on organic gardening, pest control, and sustainable practices.
                                 </Card.Text>
                             </Card.Body>
                         </Card>

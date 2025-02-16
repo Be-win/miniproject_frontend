@@ -34,11 +34,52 @@ html, body, #root, .home-page {
 .card-img-top {
     height: 200px;
     object-fit: cover;
-    border-radius: 32px 32px 0 0;
+}
+
+.carousel-heading2 {
+    color: white;
 }
 
 /* Section headings */
 h2 {
     color: #2c3e50;
     font-weight: bold;
+}
+
+/* Home.css */
+.carousel-image {
+    height: 60vh;
+    object-fit: cover;
+    filter: brightness(0.8);
+}
+
+.featured-gardens .garden-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.featured-gardens .garden-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.garden-image {
+    height: 200px;
+    object-fit: cover;
+}
+
+.info-card {
+    background-color: #f8f9fa;
+    border: none;
+    transition: transform 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-3px);
+}
+
+.info-card .bi {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #4CAF50;
 }

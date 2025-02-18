@@ -12,11 +12,25 @@ const GardenProfilePage = ({ user }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [showRequestModal, setShowRequestModal] = useState(false);
+    const [showExtensionModal, setShowExtensionModal] = useState(false);
     const [landAmount, setLandAmount] = useState("");
+    const [fromDate, setFromDate] = useState("");
+    const [toDate, setToDate] = useState("");
+    const [extensionEndDate, setExtensionEndDate] = useState("");
     const [requestError, setRequestError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [contactInfo, setContactInfo] = useState("");
     const [message, setMessage] = useState("");
+    const [userAllocations, setUserAllocations] = useState([]);
+    const [allocationsLoading, setAllocationsLoading] = useState(true);
+
+    const userAllocation = userAllocations.find(a =>
+        Number(a.garden_id) === Number(garden?.id)
+    );
+    const allocationStatus = userAllocation?.status || '';
+    const hasAllocation = userAllocation &&
+        ['approved', 'active', 'pending_extension'].includes(allocationStatus) &&
+        userAllocation.end_date;
 
     const dummyReviews = [
         {
@@ -46,9 +60,7 @@ const GardenProfilePage = ({ user }) => {
         const fetchGardenDetails = async () => {
             try {
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/garden/${id}`);
-                if (!response.ok) {
-                    throw new Error("Failed to fetch garden details.");
-                }
+                if (!response.ok) throw new Error("Failed to fetch garden details.");
                 const data = await response.json();
                 setGarden(data.data);
             } catch (error) {
@@ -58,73 +70,141 @@ const GardenProfilePage = ({ user }) => {
             }
         };
 
+        const fetchUserAllocations = async () => {
+            if (user) {
+                try {
+                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/allocations`, {
+                        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                    });
+                    const data = await response.json();
+                    setUserAllocations(data.data || []);
+                } catch (error) {
+                    console.error("Error fetching allocations:", error);
+                } finally {
+                    setAllocationsLoading(false);
+                }
+            }
+        };
+
         fetchGardenDetails();
-    }, [id]);
+        fetchUserAllocations();
+    }, [id, user]);
 
     const handleLandRequest = async (e) => {
         e.preventDefault();
         setRequestError("");
-        const remainingLand = parseFloat(garden.total_land) - parseFloat(garden.allocated_land);
-
-        if (!landAmount || landAmount <= 0 || landAmount > remainingLand) {
-            setRequestError(`Please enter a valid amount between 0.01 and ${remainingLand}`);
-            return;
-        }
 
         try {
+            console.log("Submitting request with:", {
+                requested_land: landAmount,
+                start_date: fromDate,
+                end_date: toDate,
+                contact_info: contactInfo,
+                message: message
+            });
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/garden/${garden.id}/requests`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
                 },
                 body: JSON.stringify({
-                    requested_land: landAmount,
+                    requested_land: parseFloat(landAmount),
                     contact_info: contactInfo,
                     message: message,
-                }),
+                    start_date: fromDate,
+                    end_date: toDate
+                })
             });
 
-            if (!response.ok) throw new Error("Failed to submit land request");
+            const data = await response.json(); // Always read response body
+
+            if (!response.ok) {
+                // Handle validation errors from backend
+                const errorMessage = data.error?.details?.join(', ') ||
+                    data.error?.message ||
+                    data.message ||
+                    "Failed to submit land request";
+                throw new Error(errorMessage);
+            }
 
             setSuccessMessage("Land request submitted successfully!");
             setTimeout(() => {
                 setShowRequestModal(false);
-                setSuccessMessage("");
+                window.location.reload();
+            }, 3000);
+        } catch (err) {
+            setRequestError(err.message);
+            console.error("Request error:", err);
+        }
+    };
+
+    const handleExtensionRequest = async (e) => {
+        e.preventDefault();
+        setRequestError("");
+
+        try {
+            if (!userAllocation) throw new Error("No active allocation found");
+            if (userAllocation.status === 'pending_extension') {
+                throw new Error("Extension request already pending");
+            }
+
+            const newEndDate = new Date(extensionEndDate);
+            const currentEndDate = new Date(userAllocation.end_date);
+            if (newEndDate <= currentEndDate) {
+                throw new Error("New end date must be after current end date");
+            }
+
+            const response = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/garden/requests/${userAllocation.id}/extend`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                    body: JSON.stringify({
+                        end_date: extensionEndDate,
+                        message: message
+                    }),
+                }
+            );
+
+            if (!response.ok) throw new Error("Failed to submit extension request");
+
+            setSuccessMessage("Extension request submitted successfully!");
+            setTimeout(() => {
+                setShowExtensionModal(false);
+                window.location.reload();
             }, 3000);
         } catch (err) {
             setRequestError(err.message);
         }
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
+    if (loading || allocationsLoading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+    if (!garden) return <div>Garden not found</div>;
 
     const allocated = parseFloat(garden.allocated_land);
     const total = parseFloat(garden.total_land);
     const remainingLand = total - allocated;
+    const isOwner = user?.id === garden.owner_id;
 
     return (
         <div>
             <Navbar isLoggedIn={!!user} user={user} />
 
+            {/* Request Land Modal */}
             {showRequestModal && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.requestModal}>
                         <h3>Request Land Allocation</h3>
                         <form onSubmit={handleLandRequest}>
                             <div className={styles.formGroup}>
-                                <label htmlFor="landAmount">
-                                    Amount Needed (Max: {remainingLand.toFixed(2)} units)
-                                </label>
+                                <label>Amount Needed (Max: {remainingLand.toFixed(2)} units)</label>
                                 <input
                                     type="number"
-                                    id="landAmount"
                                     step="0.01"
                                     min="0.01"
                                     max={remainingLand}
@@ -135,12 +215,33 @@ const GardenProfilePage = ({ user }) => {
                             </div>
 
                             <div className={styles.formGroup}>
-                                <label htmlFor="contactInfo">
-                                    Contact Information
-                                </label>
+                                <label>From Date</label>
+                                <input
+                                    type="date"
+                                    value={fromDate}
+                                    onChange={(e) => setFromDate(e.target.value)}
+                                    min={new Date().toISOString().split('T')[0]}
+                                    required
+                                    pattern="\d{4}-\d{2}-\d{2}"
+                                />
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <label>To Date</label>
+                                <input
+                                    type="date"
+                                    value={toDate}
+                                    onChange={(e) => setToDate(e.target.value)}
+                                    min={fromDate || new Date().toISOString().split('T')[0]}
+                                    required
+                                    pattern="\d{4}-\d{2}-\d{2}"
+                                />
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <label>Contact Information</label>
                                 <input
                                     type="text"
-                                    id="contactInfo"
                                     value={contactInfo}
                                     onChange={(e) => setContactInfo(e.target.value)}
                                     placeholder="Email or phone number"
@@ -149,11 +250,8 @@ const GardenProfilePage = ({ user }) => {
                             </div>
 
                             <div className={styles.formGroup}>
-                                <label htmlFor="message">
-                                    Message to Owner
-                                </label>
+                                <label>Message to Owner</label>
                                 <textarea
-                                    id="message"
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
                                     placeholder="Explain your land use intentions"
@@ -182,6 +280,54 @@ const GardenProfilePage = ({ user }) => {
                 </div>
             )}
 
+            {/* Extension Request Modal */}
+            {showExtensionModal && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.requestModal}>
+                        <h3>Request Allocation Extension</h3>
+                        <form onSubmit={handleExtensionRequest}>
+                            <div className={styles.formGroup}>
+                                <label>New End Date</label>
+                                <input
+                                    type="date"
+                                    value={extensionEndDate}
+                                    min={new Date().toISOString().split('T')[0]}
+                                    onChange={(e) => setExtensionEndDate(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <label>Extension Reason</label>
+                                <textarea
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    placeholder="Explain why you need an extension"
+                                    rows="4"
+                                    required
+                                />
+                            </div>
+
+                            {requestError && <p className={styles.error}>{requestError}</p>}
+                            {successMessage && <p className={styles.success}>{successMessage}</p>}
+
+                            <div className={styles.modalButtons}>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowExtensionModal(false)}
+                                    className={styles.cancelButton}
+                                >
+                                    Cancel
+                                </button>
+                                <button type="submit" className={styles.submitButton}>
+                                    Request Extension
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
             <div className={styles.gardenProfile}>
                 <div className={styles.mapContainer}>
                     <MapContainer
@@ -191,7 +337,7 @@ const GardenProfilePage = ({ user }) => {
                     >
                         <TileLayer
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            attribution='&copy; OpenStreetMap contributors'
                         />
                         <Marker position={[garden.latitude, garden.longitude]}>
                             <Popup>Garden Location</Popup>
@@ -201,32 +347,79 @@ const GardenProfilePage = ({ user }) => {
 
                 <div className={styles.gardenDetails}>
                     <h1>{garden.name}</h1>
-                    <p>
-                        <strong>Address:</strong> {garden.address}
+                    <p className={styles.ownerName}>
+                        Owned by: {garden.owner_name}
                     </p>
+                    <p><strong>Address:</strong> {garden.address}</p>
                     <p>{garden.description}</p>
                 </div>
 
                 <div className={styles.landAllocation}>
                     <h2>Land Allocation</h2>
-                    <p>Allocated: {((allocated / total) * 100).toFixed(2)}%</p>
-                    <p>Remaining: {((remainingLand / total) * 100).toFixed(2)}%</p>
+                    <p>Total: {total.toFixed(2)} units</p>
+                    <p>Allocated: {allocated.toFixed(2)} units ({((allocated / total) * 100).toFixed(2)}%)</p>
+                    <p>Remaining: {remainingLand.toFixed(2)} units</p>
                     <div className={styles.progressBar}>
                         <div
                             className={styles.progressAllocated}
                             style={{ width: `${(allocated / total) * 100}%` }}
-                        ></div>
-                        <div
-                            className={styles.progressRemaining}
-                            style={{ width: `${(remainingLand / total) * 100}%` }}
-                        ></div>
+                        />
                     </div>
-                    <button
-                        className={styles.requestLandButton}
-                        onClick={() => setShowRequestModal(true)}
-                    >
-                        Request Land
-                    </button>
+
+                    {!isOwner && (
+                        <div className={styles.requestButtons}>
+                            {remainingLand > 0 ? (
+                                <>
+                                    <button
+                                        className={styles.requestLandButton}
+                                        onClick={() => setShowRequestModal(true)}
+                                        disabled={hasAllocation && allocationStatus !== 'expired'}
+                                    >
+                                        {hasAllocation ? (
+                                            allocationStatus === 'pending_extension' ? (
+                                                `Active until ${new Date(userAllocation.end_date).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                })}`
+                                            ) : (
+                                                `Active until ${new Date(userAllocation.end_date).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                })}`
+                                            )
+                                        ) : "Request Land"}
+                                    </button>
+
+                                    {hasAllocation && allocationStatus === 'pending_extension' && (
+                                        <p className={styles.pendingExtension}>
+                                            Pending extension to: {new Date(
+                                            userAllocation.proposed_end_date
+                                        ).toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        })}
+                                        </p>
+                                    )}
+
+                                    {hasAllocation && ['approved', 'active'].includes(allocationStatus) && (
+                                        <button
+                                            className={styles.extendButton}
+                                            onClick={() => setShowExtensionModal(true)}
+                                        >
+                                            Request Extension
+                                        </button>
+                                    )}
+                                </>
+                            ) : (
+                                <button className={styles.soldOutButton} disabled>
+                                    Sold Out
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 <div className={styles.gardenGallery}>
@@ -235,7 +428,11 @@ const GardenProfilePage = ({ user }) => {
                         {garden.images && garden.images.length > 0 ? (
                             garden.images.map((image) => (
                                 <div key={image.id} className={styles.imageItem}>
-                                    <img src={image.image_url} alt={`Garden Image ${image.id}`} loading="lazy" />
+                                    <img
+                                        src={image.image_url}
+                                        alt={`Garden Image ${image.id}`}
+                                        loading="lazy"
+                                    />
                                     <p>Uploaded on: {new Date(image.uploaded_at).toLocaleDateString()}</p>
                                 </div>
                             ))

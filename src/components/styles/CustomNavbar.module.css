@@ -147,6 +147,15 @@
     text-decoration: none;
 }
 
+.notificationType {
+    margin-bottom: 0.5rem;
+}
+
+.notificationType .badge {
+    font-size: 0.75rem;
+    font-weight: normal;
+}
+
 
 
 

@@ -130,6 +130,16 @@ const GardenDirectoryPage: React.FC<{ user: User | null }> = ({ user }) => {
                         <option value="rent">Rent</option>
                         <option value="charity">Charity</option>
                     </select>
+
+                    {/* Add Create Garden button */}
+                    {user && (
+                        <button
+                            className="create-garden-btn"
+                            onClick={() => navigate('creategarden')}
+                        >
+                            Create Garden
+                        </button>
+                    )}
                 </div>
 
                 {/* Gardens Grid */}

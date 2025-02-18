@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     Navbar, Nav, Container, NavDropdown, Button, Badge,
     Modal, ListGroup, Stack, Alert
 } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import styles from "./styles/CustomNavbar.module.css";
 
 // eslint-disable-next-line react/prop-types
-const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
+const CustomNavbar = ({isLoggedIn, user, setUser, onLogout}) => {
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState([]);
     const [selectedNotification, setSelectedNotification] = useState(null);
@@ -23,7 +23,7 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
             try {
                 const token = localStorage.getItem("token");
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notifications/land-notifications`, {
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: {Authorization: `Bearer ${token}`}
                 });
 
                 if (response.status === 401) {
@@ -33,7 +33,8 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
 
                 if (!response.ok) throw new Error("Failed to fetch notifications");
 
-                const { data } = await response.json();
+                const {data} = await response.json();
+                setNotifications(data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
                 setNotifications(data);
             } catch (error) {
                 console.error("Error fetching notifications:", error);
@@ -68,8 +69,21 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
 
 
             setNotifications(prev => prev.map(n =>
-                n.id === notification.id ? { ...n, is_read: true } : n
+                n.id === notification.id ? {...n, is_read: true} : n
             ));
+
+            // Fetch extension request details if needed
+            if (notification.type === 'extension_request') {
+                const requestResponse = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/garden/requests/${notification.request_id}`,
+                    {
+                        headers: {Authorization: `Bearer ${localStorage.getItem("token")}`}
+                    });
+                if (requestResponse.ok) {
+                    const {data} = await requestResponse.json();
+                    notification.extensionDetails = data;
+                }
+            }
 
             setSelectedNotification(notification);
             console.log(notification);
@@ -80,7 +94,14 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
 
     const handleRequestAction = async (status) => {
         try {
-            await fetch(`${import.meta.env.VITE_API_BASE_URL}/garden/requests/${selectedNotification.request_id}`, {
+            // Determine endpoint and HTTP method based on notification type
+            const isExtensionRequest = selectedNotification.type === 'extension_request';
+            const endpoint = isExtensionRequest
+                ? `${import.meta.env.VITE_API_BASE_URL}/garden/requests/${selectedNotification.request_id}/extend`
+                : `${import.meta.env.VITE_API_BASE_URL}/garden/requests/${selectedNotification.request_id}`;
+
+            // Use PATCH method for both regular and extension requests
+            const response = await fetch(endpoint, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -89,30 +110,57 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
                 body: JSON.stringify({ status })
             });
 
-            // Refresh notifications
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notifications/land-notifications`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            });
-            const { data } = await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
-            // Update the notifications with latest status
-            const updatedNotifications = await Promise.all(data.map(async (notification) => {
-                if (notification.type === 'request' && notification.id === selectedNotification.id) {
-                    const requestResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/garden/requests/${notification.request_id}`, {
-                        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-                    });
-                    if (requestResponse.ok) {
-                        const requestData = await requestResponse.json();
-                        return { ...notification, status: requestData.status };
-                    }
+            // Refresh notifications
+            const notificationsResponse = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/notifications/land-notifications`,
+                {
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
                 }
-                return notification;
-            }));
+            );
+            const { data: freshNotifications } = await notificationsResponse.json();
+
+            // Update notifications with latest status
+            const updatedNotifications = await Promise.all(
+                freshNotifications.map(async (notification) => {
+                    // Update for both request and extension types
+                    if (notification.request_id === selectedNotification.request_id) {
+                        const requestResponse = await fetch(
+                            `${import.meta.env.VITE_API_BASE_URL}/garden/requests/${notification.request_id}`,
+                            {
+                                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                            }
+                        );
+
+                        if (requestResponse.ok) {
+                            const { data: requestData } = await requestResponse.json();
+                            return {
+                                ...notification,
+                                status: requestData.status,
+                                // Update extension details if present
+                                ...(requestData.proposed_end_date && {
+                                    extensionDetails: {
+                                        ...notification.extensionDetails,
+                                        status: requestData.status,
+                                        end_date: requestData.end_date,
+                                        proposed_end_date: requestData.proposed_end_date
+                                    }
+                                })
+                            };
+                        }
+                    }
+                    return notification;
+                })
+            );
 
             setNotifications(updatedNotifications);
             setSelectedNotification(null);
         } catch (error) {
             console.error("Error processing request:", error);
+            // Consider adding user-facing error feedback here
         }
     };
 
@@ -125,7 +173,7 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
     };
 
     const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        const options = {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'};
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
@@ -133,7 +181,7 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
         <Navbar expand="lg" bg="light" fixed="top" className={styles.customNavbar}>
             <Container>
                 <Navbar.Brand href="/home">🌱 Community Garden</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav" className={styles.navbarCollapse}>
                     <Nav className="ms-auto me-5 mb-2">
                         <Nav.Link href="/home" className={styles.navLink}>Home</Nav.Link>
@@ -147,7 +195,7 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
                             <NavDropdown
                                 title={
                                     <>
-                                        <img src={user.profilePic} alt="" className={styles.profilePic} /> {user.name}
+                                        <img src={user.profilePic} alt="" className={styles.profilePic}/> {user.name}
                                     </>
                                 }
                                 id="user-dropdown"
@@ -209,7 +257,38 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
                                     </small>
                                 </div>
 
-                                {selectedNotification.type === 'request' ? (
+                                {selectedNotification.type === 'extension_request' ? (
+                                    <div className="mb-3">
+                                        <p>{selectedNotification.message}</p>
+                                        <p>Current End
+                                            Date: {formatDate(selectedNotification.extensionDetails?.end_date)}</p>
+                                        <p>Proposed End
+                                            Date: {formatDate(selectedNotification.extensionDetails?.proposed_end_date)}</p>
+                                        <small className="text-muted">
+                                            {formatDate(selectedNotification.created_at)}
+                                        </small>
+
+                                        {selectedNotification.extensionDetails?.status === 'pending_extension' ? (
+                                            <div className="d-flex gap-2 justify-content-end mt-3">
+                                                <Button variant="danger"
+                                                        onClick={() => handleRequestAction('rejected')}>
+                                                    Decline Extension
+                                                </Button>
+                                                <Button variant="success"
+                                                        onClick={() => handleRequestAction('approved')}>
+                                                    Approve Extension
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <Alert variant={
+                                                selectedNotification.extensionDetails?.status === 'approved' || 'active' ? 'success' :
+                                                    selectedNotification.extensionDetails?.status === 'rejected' ? 'danger' : 'info'
+                                            }>
+                                                Extension status: {selectedNotification.extensionDetails?.status?.toUpperCase()}
+                                            </Alert>
+                                        )}
+                                    </div>
+                                ) : selectedNotification.type === 'request' ? (
                                     selectedNotification.status === 'pending' ? (
                                         <div className="d-flex gap-2 justify-content-end">
                                             <Button
@@ -237,7 +316,8 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
                                     <Alert variant="info" className="mb-0">
                                         {selectedNotification.message}
                                     </Alert>
-                                )}
+                                )
+                                }
                             </Modal.Body>
                         </>
                     ) : (
@@ -258,6 +338,16 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
                                             >
                                                 <Stack direction="horizontal" gap={3}>
                                                     <div className={styles.notificationContent}>
+                                                        {/* Add notification type badge here */}
+                                                        <div className={styles.notificationType}>
+                                                            <Badge bg={
+                                                                notification.type === 'request' ? 'primary' :
+                                                                    notification.type === 'extension_request' ? 'warning' : 'info'
+                                                            }>
+                                                                {notification.type.replace('_', ' ').toUpperCase()}
+                                                            </Badge>
+                                                        </div>
+
                                                         <div className={styles.notificationMessage}>
                                                             {notification.message}
                                                         </div>

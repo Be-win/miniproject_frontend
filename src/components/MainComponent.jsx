@@ -9,6 +9,7 @@ import GardenProfile from "../pages/GardenProfile";
 import Navbar from "./Navbar.jsx";
 import CreateGarden from "../pages/GardenDirectory/CreateGarden";
 import ResourceShare from "../pages/ResourceSharing/ResourceSharingPage";
+import UserDashboard from "../pages/UserDashboard";
 import Test from "../pages/test.jsx"
 
 const MainComponent = () => {
@@ -43,6 +44,7 @@ const MainComponent = () => {
                 <Route path="directory/gardenProfile/:id" element={<GardenProfile user={user}/>} />
                 <Route path="directory/createGarden" element={<CreateGarden user={user}/>} />
                 <Route path="/resourcesharing" element={<ResourceShare user={user}/>} />
+                <Route path="/dashboard" element={<UserDashboard user={user}/>} />
             </Routes>
         </BrowserRouter>
     );

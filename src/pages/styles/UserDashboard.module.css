@@ -1,0 +1,445 @@
+/* frontend/src/styles/UserDashboard.module.css */
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #f8f9fa;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.content {
+    display: flex;
+    flex: 1;
+    margin-top: 60px;
+    min-height: calc(100vh - 60px);
+}
+
+.sidebar {
+    width: 280px;
+    padding: 1.5rem;
+    background: white;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+.main {
+    flex: 1;
+    padding: 2rem;
+    background: #f8f9fa;
+    overflow-y: auto;
+    height: calc(100vh - 60px);
+}
+
+/* Card layout improvements */
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.resourceGrid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+/* Form elements */
+.requestDetails {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.detailItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.dashboardContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #f8f9fa;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.dashboardContent {
+    display: flex;
+    flex: 1;
+    margin-top: 60px;
+    gap: 2rem;
+}
+
+.dashboardSidebar {
+    width: 280px;
+    padding: 1.5rem;
+    background: white;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+}
+
+.sidebarButton {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    margin: 0.25rem 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    color: #4a5568;
+    font-size: 0.95rem;
+    gap: 0.75rem;
+}
+
+.sidebarButton:hover {
+    background: #f1f5f9;
+    transform: translateX(4px);
+}
+
+.sidebarButtonActive {
+    background: #f1f5f9 !important;
+    font-weight: 600;
+    color: #1a365d;
+    border-left: 4px solid #3b82f6;
+}
+
+.dashboardMain {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+}
+
+/* Gardens List Styles */
+.gardensList {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.gardenBarCard {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.2s ease;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    gap: 1.5rem;
+}
+
+.gardenBarCard:hover {
+    transform: translateX(4px);
+    box-shadow: 4px 4px 12px rgba(0,0,0,0.06);
+    border-color: #cbd5e1;
+}
+
+.gardenBarImage {
+    width: 120px;
+    height: 80px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.gardenBarImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gardenBarDetails {
+    flex: 1;
+    min-width: 0;
+}
+
+.gardenBarHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.gardenBarTitle {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gardenTypeBadge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.gardenTypeCommunity {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.gardenTypeRent {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.gardenBarMeta {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.gardenAddress {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748b;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.gardenLandStats {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.gardenLandStat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.landStatLabel {
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+.landStatValue {
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Garden Details Styles */
+.gardenDetails {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.gardenBackButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 8px 0;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.detailsSection {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.requestCard {
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    margin-bottom: 1rem;
+}
+
+.userHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.userAvatar {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border-radius: 50%;
+}
+
+.detailGrid {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+}
+
+.detailRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detailLabel {
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.statusPending {
+    background: #ffedd5;
+    color: #c2410c;
+}
+
+.statusApproved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.statusRejected {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.statusExpired {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.actionButtonGroup {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.buttonApprove {
+    background: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.buttonReject {
+    background: #ef4444;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Resources List Styles */
+.resourceCard {
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    margin-bottom: 1rem;
+}
+
+.resourceTypeBadge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-left: 0.75rem;
+}
+
+.resourceTypeTool {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.resourceTypeSeed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.resourceTypeEquipment {
+    background: #fef3c7;
+    color: #854d0e;
+}
+
+.resourcePrice {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #16a34a;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+    }
+
+    .main {
+        height: auto;
+        padding: 1rem;
+    }
+
+    .gardenBarCard {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .gardenBarImage {
+        width: 100%;
+        height: 120px;
+    }
+
+    .gardenBarMeta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+/* Utility Classes */
+.mutedText {
+    color: #94a3b8;
+    font-style: italic;
+}

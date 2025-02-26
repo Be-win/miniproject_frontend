@@ -26,8 +26,9 @@ const CustomNavbar = ({isLoggedIn, user, setUser, onLogout}) => {
                     headers: {Authorization: `Bearer ${token}`}
                 });
 
-                if (response.status === 401) {
+                if (response.status === 403) {
                     if (onLogout) onLogout();
+                    navigate('/login', { state: { error: "Your session has expired. Please log in again." } });
                     return;
                 }
 
@@ -42,7 +43,7 @@ const CustomNavbar = ({isLoggedIn, user, setUser, onLogout}) => {
         };
 
         fetchNotifications();
-    }, [isLoggedIn, onLogout]);
+    }, [isLoggedIn, onLogout, navigate]);
 
     const handleNotificationClick = async (notification) => {
         try {
@@ -202,7 +203,7 @@ const CustomNavbar = ({isLoggedIn, user, setUser, onLogout}) => {
                                 className="mb-1"
                             >
                                 <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-                                <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
+                                <NavDropdown.Item href="/dashboard">Dashboard</NavDropdown.Item>
                                 <NavDropdown.Item
                                     onClick={() => setShowNotifications(true)}
                                     className={styles.notificationDropdownItem}

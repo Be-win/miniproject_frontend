@@ -1,0 +1,242 @@
+.profileContainer {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.profileHeader {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.avatarSection {
+    position: relative;
+}
+
+.profileImage {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.uploadButton {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #4a7c59;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+.uploadButton:hover {
+    background-color: #3a6348;
+    transform: scale(1.05);
+}
+
+.uploadButton svg {
+    width: 20px;
+    height: 20px;
+}
+
+.profileInfo {
+    flex: 1;
+}
+
+.profileInfo h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    color: #333;
+}
+
+.email {
+    margin: 0 0 1rem 0;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.editButton {
+    background-color: #4a7c59;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.editButton:hover {
+    background-color: #3a6348;
+}
+
+.activityStats {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.activityStats h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.statCard {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.statCard:hover {
+    transform: translateY(-4px);
+}
+
+.statValue {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #4a7c59;
+    margin-bottom: 0.5rem;
+}
+
+.statLabel {
+    font-size: 1rem;
+    color: #666;
+}
+
+.profileDetails {
+    margin-top: 2rem;
+}
+
+.bio {
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #444;
+}
+
+.detailsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.detailItem {
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detailItem span:first-child {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.detailItem span:last-child {
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.profileForm {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1.5rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.formGroup label {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.formGroup input,
+.formGroup textarea {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+    border-color: #4a7c59;
+    outline: none;
+}
+
+.saveButton {
+    background-color: #4a7c59;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: fit-content;
+    margin-top: 0.5rem;
+}
+
+.saveButton:hover {
+    background-color: #3a6348;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .profileHeader {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .profileInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profileContainer {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+}

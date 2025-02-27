@@ -1,112 +1,123 @@
 /* CustomNavbar.module.css */
 
-/* Set a fixed height for the navbar */
+/* Base navbar styling */
 .customNavbar {
-    height: 56px; /* Adjust this value as needed */
+    height: 56px; /* Maintain existing height */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    padding: 0 1rem;
+    background-color: white !important;
+    z-index: 1030;
+}
+
+/* Ensure container inside navbar is properly sized */
+.customNavbar :global(.container) {
+    height: 100%;
     display: flex;
     align-items: center;
 }
 
-/* Styles for the expanded navbar in mobile view */
-/* In your CSS module (e.g., CustomNavbar.module.css) */
-.navbarCollapse {
-    background-color: #f8f9fa;
-    border-radius: 0.5rem;
-    margin-top: 0.5rem;
+/* Brand styling */
+:global(.navbar-brand) {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #2e7d32 !important;
+    margin-right: 2rem;
+    padding: 0;
 }
 
+/* Fix the collapse styling */
+.navbarCollapse {
+    position: absolute;
+    top: 56px;
+    right: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: white;
+    padding: 0;
+    margin-top: 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
 
-/* Styles for the links */
+/* Only show box shadow when collapsed */
+@media (min-width: 992px) {
+    .navbarCollapse {
+        position: static;
+        background-color: transparent;
+        box-shadow: none;
+        padding: 0;
+        display: flex;
+        justify-content: flex-end;
+    }
+}
+
+/* Navigation links styling */
 .navLink {
-    color: #333; /* Default link color */
-    padding-right: 1rem;
+    color: #444 !important;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: color 0.2s;
 }
 
 .navLink:hover {
-    color: #007bff; /* Hover color */
+    color: #4caf50 !important;
 }
 
-/* Ensure the Login button and user dropdown have the same height */
-.loginButton,
-.dropdownToggle {
-    height: 36px; /* Adjust this value to match your design */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.25rem 0.5rem; /* Adjust padding to match your design */
-}
-
+/* Login button styling */
 .loginButton {
     border-color: #B1D289;
+    color: #2e7d32;
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
 .loginButton:hover {
-    border-color: #B1D289;
     background-color: #B1D289;
+    border-color: #B1D289;
+    color: white;
 }
 
-/* Ensure the profile picture in the dropdown is properly sized */
+/* Profile section styling */
 .profilePic {
-    width: 24px; /* Adjust as needed */
-    height: 24px; /* Adjust as needed */
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
+    object-fit: cover;
     margin-right: 8px;
 }
 
+/* Fix the main content to account for fixed navbar */
+:global(body) {
+    padding-top: 56px;
+}
+
+/* Notification dropdown styling */
+.notificationDropdownItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+}
+
+/* Notification modal styling */
 .notificationModal {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 90%;
-    max-width: 600px;
+    max-width: 500px;
     margin: 0;
     border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.notificationItem {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #eee;
-    transition: background-color 0.2s;
-}
-
-.notificationItem:hover {
-    background-color: #f8f9fa;
-}
-
-.notificationItem:last-child {
-    border-bottom: none;
-}
-
-.notificationContent {
-    flex-grow: 1;
-}
-
-.notificationMessage {
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-}
-
-.notificationTime {
-    font-size: 0.8rem;
-    color: #6c757d;
-}
-
-.notificationDropdownItem {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.modalContent {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     border-radius: 12px;
-    border: none;
 }
 
 .modalHeader {
     background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid #e0e0e0;
     border-radius: 12px 12px 0 0;
     padding: 1rem 1.5rem;
 }
@@ -117,45 +128,54 @@
     overflow-y: auto;
 }
 
-.notification-modal {
-    max-width: 500px;
+/* Notification item styling */
+.notificationItem {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+    cursor: pointer;
 }
 
-.notification-detail-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    border-bottom: 1px solid #dee2e6;
+.notificationItem:hover {
+    background-color: #f1f8e9;
 }
 
-.notification-action-buttons {
-    margin-top: 1.5rem;
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
+.notificationItem:last-child {
+    border-bottom: none;
 }
 
-.back-button {
-    padding: 0;
-    margin-right: auto;
-    color: #6c757d;
-}
-
-.back-button:hover {
-    color: #0d6efd;
-    text-decoration: none;
+.notificationContent {
+    flex-grow: 1;
 }
 
 .notificationType {
     margin-bottom: 0.5rem;
 }
 
-.notificationType .badge {
-    font-size: 0.75rem;
-    font-weight: normal;
+.notificationType :global(.badge) {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.35em 0.65em;
 }
 
+.notificationMessage {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
 
+.notificationTime {
+    font-size: 0.8rem;
+    color: #757575;
+}
 
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .navLink {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #eee;
+    }
 
+    .navLink:last-child {
+        border-bottom: none;
+    }
+}

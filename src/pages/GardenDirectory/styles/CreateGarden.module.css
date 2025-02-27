@@ -3,22 +3,49 @@
     background-color: #f8faf7;
     min-height: 100vh;
     padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.backButton {
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    background-color: transparent;
+    color: #3a4a3e;
+    border: none;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+.backButton:hover {
+    background-color: rgba(177, 210, 137, 0.2);
+    transform: translateX(-2px);
 }
 
 .form {
     background: white;
-    padding: 2rem;
+    padding: 2.5rem;
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     border: 1px solid #e2e8e0;
+    margin-top: 2rem;
 }
 
 .title {
     color: #3a4a3e;
     font-size: 2.5rem;
-    margin-bottom: 2rem;
+    margin: 3rem 0 1rem;
     position: relative;
     padding-left: 1rem;
+    text-align: center;
 }
 
 .title::before {
@@ -32,36 +59,109 @@
     background-color: #B1D289;
 }
 
+.formSection {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e2e8e0;
+}
+
+.formSection:last-of-type {
+    border-bottom: none;
+    margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+    color: #3a4a3e;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.formRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .formRow {
+        grid-template-columns: 1fr;
+    }
+}
+
 .label {
     color: #3a4a3e;
     font-weight: 600;
     margin-bottom: 0.5rem;
     display: block;
+    font-size: 0.95rem;
 }
 
-.input {
+.input, .select {
     width: 100%;
-    padding: 0.8rem;
+    padding: 0.9rem;
     border: 2px solid #dbe5d8;
     border-radius: 8px;
     transition: all 0.3s ease;
     background-color: #f8faf7;
+    font-size: 1rem;
 }
 
-.input:focus {
+.input:focus, .select:focus {
     border-color: #B1D289;
     box-shadow: 0 0 0 3px rgba(177, 210, 137, 0.2);
     outline: none;
 }
 
-.textarea {
-    resize: vertical;
-    min-height: 100px;
+.input::placeholder {
+    color: #a3b5a2;
 }
 
-.submitButton {
-    background-color: #B1D289;
+.textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.checkboxGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 1rem 0;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.checkbox input {
+    margin-right: 0.5rem;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.checkbox label {
     color: #3a4a3e;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.formActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.submitButton, .cancelButton {
     padding: 1rem 2rem;
     border: none;
     border-radius: 8px;
@@ -70,12 +170,18 @@
     letter-spacing: 0.5px;
     transition: all 0.3s ease;
     cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.submitButton {
+    background-color: #B1D289;
+    color: #3a4a3e;
 }
 
 .submitButton:hover {
     background-color: #9cba77;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .submitButton:disabled {
@@ -85,24 +191,41 @@
     box-shadow: none;
 }
 
+.cancelButton {
+    background-color: transparent;
+    color: #3a4a3e;
+    border: 2px solid #dbe5d8;
+}
+
+.cancelButton:hover {
+    background-color: #f8faf7;
+    border-color: #B1D289;
+}
+
 .imageGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 1rem;
     margin-top: 1rem;
 }
 
-.previewImage {
+.imageContainer {
+    position: relative;
     border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    aspect-ratio: 1 / 1;
+}
+
+.previewImage {
     object-fit: cover;
-    height: 150px;
+    height: 100%;
     width: 100%;
-    border: 2px solid #e2e8e0;
     transition: transform 0.3s ease;
 }
 
 .previewImage:hover {
-    transform: scale(1.03);
+    transform: scale(1.05);
 }
 
 .mapContainer {
@@ -110,9 +233,10 @@
     overflow: hidden;
     border: 2px solid #dbe5d8;
     margin: 1rem 0;
-    height: 500px; /* Increased from 400px */
+    height: 400px;
     width: 100%;
     position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .leafletContainer {
@@ -125,6 +249,7 @@
     color: #6b7e6a;
     font-size: 0.9rem;
     margin-top: 0.5rem;
+    font-style: italic;
 }
 
 .error {
@@ -133,24 +258,37 @@
     padding: 1rem;
     border-radius: 8px;
     margin: 1rem 0;
+    font-weight: 500;
+}
+
+.fileInput {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px dashed #dbe5d8;
+    border-radius: 8px;
+    background-color: #f8faf7;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.fileInput:hover {
+    border-color: #B1D289;
+    background-color: rgba(177, 210, 137, 0.1);
 }
 
 .fileInput::file-selector-button {
     background-color: #B1D289;
     color: #3a4a3e;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1rem;
     border-radius: 6px;
     margin-right: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-weight: 500;
 }
 
 .fileInput::file-selector-button:hover {
     background-color: #9cba77;
-}
-
-.typeSelect {
-    composes: input;
-    cursor: pointer;
 }

@@ -1,5 +1,5 @@
 import  { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import App from "../App.jsx";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
@@ -10,6 +10,7 @@ import Navbar from "./Navbar.jsx";
 import CreateGarden from "../pages/GardenDirectory/CreateGarden";
 import ResourceShare from "../pages/ResourceSharing/ResourceSharingPage";
 import UserDashboard from "../pages/UserDashboard";
+import UserProfile from "../pages/UserProfile";
 import Test from "../pages/test.jsx"
 
 const MainComponent = () => {
@@ -45,6 +46,11 @@ const MainComponent = () => {
                 <Route path="directory/createGarden" element={<CreateGarden user={user}/>} />
                 <Route path="/resourcesharing" element={<ResourceShare user={user}/>} />
                 <Route path="/dashboard" element={<UserDashboard user={user}/>} />
+                <Route path="/profile/:userId" element={<UserProfile user={user}/>} />
+                <Route
+                    path="/profile"
+                    element={<Navigate to={`/profile/${user?.id}`} replace />}
+                />
             </Routes>
         </BrowserRouter>
     );

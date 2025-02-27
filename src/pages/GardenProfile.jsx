@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import React, {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+import {MapContainer, TileLayer, Marker, Popup} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "./styles/GardenProfile.module.css";
+import AyurvedicCropSuggestions from "./AyurvedicCropSuggestions";
+import GardenersStats from "./GardenerStats";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 
-const GardenProfilePage = ({ user }) => {
-    const { id } = useParams();
+const GardenProfilePage = ({user}) => {
+    const {id} = useParams();
     const [garden, setGarden] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -74,7 +76,7 @@ const GardenProfilePage = ({ user }) => {
             if (user) {
                 try {
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/allocations`, {
-                        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                        headers: {Authorization: `Bearer ${localStorage.getItem("token")}`}
                     });
                     const data = await response.json();
                     setUserAllocations(data.data || []);
@@ -95,13 +97,6 @@ const GardenProfilePage = ({ user }) => {
         setRequestError("");
 
         try {
-            console.log("Submitting request with:", {
-                requested_land: landAmount,
-                start_date: fromDate,
-                end_date: toDate,
-                contact_info: contactInfo,
-                message: message
-            });
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/garden/${garden.id}/requests`, {
                 method: "POST",
                 headers: {
@@ -117,10 +112,9 @@ const GardenProfilePage = ({ user }) => {
                 })
             });
 
-            const data = await response.json(); // Always read response body
+            const data = await response.json();
 
             if (!response.ok) {
-                // Handle validation errors from backend
                 const errorMessage = data.error?.details?.join(', ') ||
                     data.error?.message ||
                     data.message ||
@@ -193,7 +187,7 @@ const GardenProfilePage = ({ user }) => {
 
     return (
         <div>
-            <Navbar isLoggedIn={!!user} user={user} />
+            <Navbar isLoggedIn={!!user} user={user}/>
 
             {/* Request Land Modal */}
             {showRequestModal && (
@@ -222,7 +216,6 @@ const GardenProfilePage = ({ user }) => {
                                     onChange={(e) => setFromDate(e.target.value)}
                                     min={new Date().toISOString().split('T')[0]}
                                     required
-                                    pattern="\d{4}-\d{2}-\d{2}"
                                 />
                             </div>
 
@@ -234,7 +227,6 @@ const GardenProfilePage = ({ user }) => {
                                     onChange={(e) => setToDate(e.target.value)}
                                     min={fromDate || new Date().toISOString().split('T')[0]}
                                     required
-                                    pattern="\d{4}-\d{2}-\d{2}"
                                 />
                             </div>
 
@@ -328,8 +320,9 @@ const GardenProfilePage = ({ user }) => {
                 </div>
             )}
 
-            <div className={styles.gardenProfile}>
-                <div className={styles.mapContainer}>
+            <div className={styles.gardenProfileContainer}>
+                {/* Map Section - Full width */}
+                <div className={styles.mapSection}>
                     <MapContainer
                         center={[garden.latitude, garden.longitude]}
                         zoom={13}
@@ -345,89 +338,135 @@ const GardenProfilePage = ({ user }) => {
                     </MapContainer>
                 </div>
 
-                <div className={styles.gardenDetails}>
-                    <h1>{garden.name}</h1>
-                    <p className={styles.ownerName}>
-                        Owned by: {garden.owner_name}
-                    </p>
-                    <p><strong>Address:</strong> {garden.address}</p>
-                    <p>{garden.description}</p>
-                </div>
+                {/* Garden Info + Allocation Section */}
+                <div className={styles.infoAllocationRow}>
+                    {/* Garden Details */}
+                    <div className={styles.gardenDetailsColumn}>
+                        <h1>{garden.name}</h1>
+                        <p className={styles.ownerName}>
+                            Owned by: {garden.owner_name}
+                        </p>
+                        <p><strong>Address:</strong> {garden.address}</p>
+                        <p>{garden.description}</p>
 
-                <div className={styles.landAllocation}>
-                    <h2>Land Allocation</h2>
-                    <p>Total: {total.toFixed(2)} units</p>
-                    <p>Allocated: {allocated.toFixed(2)} units ({((allocated / total) * 100).toFixed(2)}%)</p>
-                    <p>Remaining: {remainingLand.toFixed(2)} units</p>
-                    <div className={styles.progressBar}>
-                        <div
-                            className={styles.progressAllocated}
-                            style={{ width: `${(allocated / total) * 100}%` }}
-                        />
+                        {/* Garden Features Section */}
+                        <div className={styles.gardenFeatures}>
+                            <h3>Garden Features</h3>
+                            <div className={styles.featuresGrid}>
+                                <div className={styles.featureItem}>
+                                    <span className={styles.featureLabel}>Soil Type:</span>
+                                    <span className={styles.featureValue}>{garden.soil_type}</span>
+                                </div>
+                                <div className={styles.featureItem}>
+                                    <span className={styles.featureLabel}>Water Availability:</span>
+                                    <span className={styles.featureValue}>
+                                        {garden.irrigation ? "Available" : "Not Available"}
+                                    </span>
+                                </div>
+                                <div className={styles.featureItem}>
+                                    <span className={styles.featureLabel}>Electricity:</span>
+                                    <span className={styles.featureValue}>
+                                        {garden.electricity ? "Available" : "Not Available"}
+                                    </span>
+                                </div>
+                                <div className={styles.featureItem}>
+                                    <span className={styles.featureLabel}>Previous Crops:</span>
+                                    <span className={styles.featureValue}>{garden.previous_crops}</span>
+                                </div>
+                                <div className={styles.featureItem}>
+                                    <span className={styles.featureLabel}>Garden Type:</span>
+                                    <span className={styles.featureValue}>{garden.type}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    {!isOwner && (
-                        <div className={styles.requestButtons}>
-                            {remainingLand > 0 ? (
-                                <>
-                                    <button
-                                        className={styles.requestLandButton}
-                                        onClick={() => setShowRequestModal(true)}
-                                        disabled={hasAllocation && allocationStatus !== 'expired'}
-                                    >
-                                        {hasAllocation ? (
-                                            allocationStatus === 'pending_extension' ? (
-                                                `Active until ${new Date(userAllocation.end_date).toLocaleDateString('en-US', {
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric'
-                                                })}`
-                                            ) : (
-                                                `Active until ${new Date(userAllocation.end_date).toLocaleDateString('en-US', {
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric'
-                                                })}`
-                                            )
-                                        ) : "Request Land"}
-                                    </button>
-
-                                    {hasAllocation && allocationStatus === 'pending_extension' && (
-                                        <p className={styles.pendingExtension}>
-                                            Pending extension to: {new Date(
-                                            userAllocation.proposed_end_date
-                                        ).toLocaleDateString('en-US', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        })}
-                                        </p>
-                                    )}
-
-                                    {hasAllocation && ['approved', 'active'].includes(allocationStatus) && (
-                                        <button
-                                            className={styles.extendButton}
-                                            onClick={() => setShowExtensionModal(true)}
-                                        >
-                                            Request Extension
-                                        </button>
-                                    )}
-                                </>
-                            ) : (
-                                <button className={styles.soldOutButton} disabled>
-                                    Sold Out
-                                </button>
-                            )}
+                    {/* Land Allocation */}
+                    <div className={styles.landAllocationColumn}>
+                        <h2>Land Allocation</h2>
+                        <p>Total: {total.toFixed(2)} units</p>
+                        <p>Allocated: {allocated.toFixed(2)} units ({((allocated / total) * 100).toFixed(2)}%)</p>
+                        <p>Remaining: {remainingLand.toFixed(2)} units</p>
+                        <div className={styles.progressBar}>
+                            <div
+                                className={styles.progressAllocated}
+                                style={{width: `${(allocated / total) * 100}%`}}
+                            />
                         </div>
-                    )}
+
+                        {!isOwner && (
+                            <div className={styles.requestButtons}>
+                                {remainingLand > 0 ? (
+                                    <>
+                                        <button
+                                            className={styles.requestLandButton}
+                                            onClick={() => setShowRequestModal(true)}
+                                            disabled={hasAllocation && allocationStatus !== 'expired'}
+                                        >
+                                            {hasAllocation ? (
+                                                allocationStatus === 'pending_extension' ? (
+                                                    `Active until ${new Date(userAllocation.end_date).toLocaleDateString('en-US', {
+                                                        year: 'numeric',
+                                                        month: 'long',
+                                                        day: 'numeric'
+                                                    })}`
+                                                ) : (
+                                                    `Active until ${new Date(userAllocation.end_date).toLocaleDateString('en-US', {
+                                                        year: 'numeric',
+                                                        month: 'long',
+                                                        day: 'numeric'
+                                                    })}`
+                                                )
+                                            ) : "Request Land"}
+                                        </button>
+
+                                        {hasAllocation && allocationStatus === 'pending_extension' && (
+                                            <p className={styles.pendingExtension}>
+                                                Pending extension to: {new Date(
+                                                userAllocation.proposed_end_date
+                                            ).toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}
+                                            </p>
+                                        )}
+
+                                        {hasAllocation && ['approved', 'active'].includes(allocationStatus) && (
+                                            <button
+                                                className={styles.extendButton}
+                                                onClick={() => setShowExtensionModal(true)}
+                                            >
+                                                Request Extension
+                                            </button>
+                                        )}
+                                    </>
+                                ) : (
+                                    <button className={styles.soldOutButton} disabled>
+                                        Sold Out
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
+                {/* Gardeners Stats Section */}
+                <div className={styles.gardenersStats}>
+                    <GardenersStats gardenId={garden.id} />
+                </div>
+
+                {/* Gallery Section */}
                 <div className={styles.gardenGallery}>
                     <h2>Gallery</h2>
                     <div className={styles.imageGrid}>
                         {garden.images && garden.images.length > 0 ? (
-                            garden.images.map((image) => (
-                                <div key={image.id} className={styles.imageItem}>
+                            garden.images.map((image, index) => (
+                                <div
+                                    key={image.id}
+                                    className={styles.imageItem}
+                                    style={{ '--index': index }} // Add index for animation
+                                >
                                     <img
                                         src={image.image_url}
                                         alt={`Garden Image ${image.id}`}
@@ -442,11 +481,21 @@ const GardenProfilePage = ({ user }) => {
                     </div>
                 </div>
 
+                {/* Ayurvedic Suggestions */}
+                <div className={styles.ayurvedicSection}>
+                    <AyurvedicCropSuggestions garden={garden}/>
+                </div>
+
+                {/* Reviews Section */}
                 <div className={styles.reviewsSection}>
                     <h2>User Reviews</h2>
-                    {dummyReviews.length > 0 ? (
-                        dummyReviews.map((review) => (
-                            <div key={review.id} className={styles.reviewCard}>
+                    <div className={styles.reviewsGrid}>
+                        {dummyReviews.map((review, index) => (
+                            <div
+                                key={review.id}
+                                className={styles.reviewCard}
+                                style={{ '--index': index }} // Add index for animation
+                            >
                                 <div className={styles.reviewHeader}>
                                     <span className={styles.reviewUser}>{review.user}</span>
                                     <span className={styles.reviewRating}>⭐ {review.rating}</span>
@@ -456,13 +505,11 @@ const GardenProfilePage = ({ user }) => {
                                     Reviewed on: {new Date(review.date).toLocaleDateString()}
                                 </p>
                             </div>
-                        ))
-                    ) : (
-                        <p>No reviews yet.</p>
-                    )}
+                        ))}
+                    </div>
                 </div>
             </div>
-            <Footer />
+            <Footer/>
         </div>
     );
 };

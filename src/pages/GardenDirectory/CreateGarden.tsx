@@ -17,6 +17,10 @@ type GardenFormData = {
     total_land: number;
     type: 'community' | 'rent' | 'charity';
     images: string[];
+    soil_type: string;
+    irrigation: boolean;
+    electricity: boolean;
+    previous_crops: string;
 };
 
 const CreateGardenPage: React.FC<{ user: any }> = ({ user }) => {
@@ -30,6 +34,10 @@ const CreateGardenPage: React.FC<{ user: any }> = ({ user }) => {
         total_land: 0,
         type: 'community',
         images: [],
+        soil_type: '',
+        irrigation: false,
+        electricity: false,
+        previous_crops: '',
     });
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [uploading, setUploading] = useState(false);
@@ -113,141 +121,231 @@ const CreateGardenPage: React.FC<{ user: any }> = ({ user }) => {
         }
     };
 
+    const handleBackToDirectory = () => {
+        navigate('/directory');
+    };
+
     if (!user) {
         return <div className={styles.error}>Please login to create a garden</div>;
     }
 
-
     return (
         <div className={styles.container}>
+            <button
+                onClick={handleBackToDirectory}
+                className={styles.backButton}
+            >
+                ← Back to Directory
+            </button>
+
             <h1 className={styles.title}>Create New Garden</h1>
 
             <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>Garden Name</label>
-                    <input
-                        type="text"
-                        required
-                        className={styles.input}
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    />
-                </div>
+                <div className={styles.formSection}>
+                    <h2 className={styles.sectionTitle}>Basic Information</h2>
 
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>Description</label>
-                    <textarea
-                        className={`${styles.input} ${styles.textarea}`}
-                        value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>Address</label>
-                    <input
-                        type="text"
-                        required
-                        className={styles.input}
-                        value={formData.address}
-                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>Total Land Area (m²)</label>
-                    <input
-                        type="number"
-                        required
-                        min="0"
-                        step="0.01"
-                        className={styles.input}
-                        value={formData.total_land || 0}
-                        onChange={(e) => {
-                            const value = parseFloat(e.target.value);
-                            if (isNaN(value) || value < 0) {
-                                setError('Please enter a valid land area (must be a positive number).');
-                            } else {
-                                setError('');
-                                setFormData({
-                                    ...formData,
-                                    total_land: value,
-                                });
-                            }
-                        }}
-                    />
-                    {error && <div className={styles.error}>{error}</div>}
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>Garden Type</label>
-                    <select
-                        className={styles.typeSelect}
-                        value={formData.type}
-                        onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
-                    >
-                        <option value="community">Community</option>
-                        <option value="rent">Rent</option>
-                        <option value="charity">Charity</option>
-                    </select>
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>Select Location</label>
-                    <div className={styles.mapContainer}>
-                        <MapContainer
-                            center={[51.505, -0.09]}
-                            zoom={13}
-                            className={styles.leafletContainer}
-                        >
-                            <TileLayer
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                // @ts-ignore
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            />
-                            <MapClickHandler />
-                            {formData.latitude && formData.longitude && (
-                                <Marker position={[formData.latitude, formData.longitude]} />
-                            )}
-                        </MapContainer>
+                    <div className={styles.formGroup}>
+                        <label className={styles.label}>Garden Name</label>
+                        <input
+                            type="text"
+                            required
+                            className={styles.input}
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            placeholder="Enter garden name"
+                        />
                     </div>
-                    {formData.latitude && formData.longitude && (
-                        <p className={styles.coordinates}>
-                            Selected coordinates: {formData.latitude.toFixed(4)}, {formData.longitude.toFixed(4)}
-                        </p>
-                    )}
+
+                    <div className={styles.formGroup}>
+                        <label className={styles.label}>Description</label>
+                        <textarea
+                            className={`${styles.input} ${styles.textarea}`}
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            placeholder="Describe your garden, its purpose, and any special features"
+                        />
+                    </div>
+
+                    <div className={styles.formRow}>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Garden Type</label>
+                            <select
+                                className={styles.select}
+                                value={formData.type}
+                                onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+                            >
+                                <option value="community">Community</option>
+                                <option value="rent">Rent</option>
+                                <option value="charity">Charity</option>
+                            </select>
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Total Land Area (m²)</label>
+                            <input
+                                type="number"
+                                required
+                                min="0"
+                                step="0.01"
+                                className={styles.input}
+                                value={formData.total_land || 0}
+                                onChange={(e) => {
+                                    const value = parseFloat(e.target.value);
+                                    if (isNaN(value) || value < 0) {
+                                        setError('Please enter a valid land area (must be a positive number).');
+                                    } else {
+                                        setError('');
+                                        setFormData({
+                                            ...formData,
+                                            total_land: value,
+                                        });
+                                    }
+                                }}
+                            />
+                        </div>
+                    </div>
                 </div>
 
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>Upload Images</label>
-                    <input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        onChange={handleFileSelect}
-                        className={styles.fileInput}
-                    />
-                    <div className={styles.imageGrid}>
-                        {selectedFiles.map((file, index) => (
-                            <img
-                                key={index}
-                                src={URL.createObjectURL(file)}
-                                alt={`Preview ${index}`}
-                                className={styles.previewImage}
+                <div className={styles.formSection}>
+                    <h2 className={styles.sectionTitle}>Location</h2>
+
+                    <div className={styles.formGroup}>
+                        <label className={styles.label}>Address</label>
+                        <input
+                            type="text"
+                            required
+                            className={styles.input}
+                            value={formData.address}
+                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                            placeholder="Enter the garden's address"
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label className={styles.label}>Select Location on Map</label>
+                        <div className={styles.mapContainer}>
+                            <MapContainer
+                                center={[51.505, -0.09]}
+                                zoom={13}
+                                className={styles.leafletContainer}
+                            >
+                                <TileLayer
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    // @ts-ignore
+                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                />
+                                <MapClickHandler />
+                                {formData.latitude && formData.longitude && (
+                                    <Marker position={[formData.latitude, formData.longitude]} />
+                                )}
+                            </MapContainer>
+                        </div>
+                        {formData.latitude && formData.longitude && (
+                            <p className={styles.coordinates}>
+                                Selected coordinates: {formData.latitude.toFixed(4)}, {formData.longitude.toFixed(4)}
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                <div className={styles.formSection}>
+                    <h2 className={styles.sectionTitle}>Garden Characteristics</h2>
+
+                    <div className={styles.formRow}>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Soil Type</label>
+                            <select
+                                className={styles.select}
+                                value={formData.soil_type}
+                                onChange={(e) => setFormData({ ...formData, soil_type: e.target.value })}
+                            >
+                                <option value="">Select Soil Type</option>
+                                <option value="Loamy">Loamy</option>
+                                <option value="Sandy">Sandy</option>
+                                <option value="Clay">Clay</option>
+                                <option value="Silt">Silt</option>
+                            </select>
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Previous Crops Grown</label>
+                            <input
+                                type="text"
+                                className={styles.input}
+                                value={formData.previous_crops}
+                                onChange={(e) => setFormData({ ...formData, previous_crops: e.target.value })}
+                                placeholder="E.g., tomatoes, lettuce, herbs"
                             />
-                        ))}
+                        </div>
+                    </div>
+
+                    <div className={styles.checkboxGroup}>
+                        <div className={styles.checkbox}>
+                            <input
+                                type="checkbox"
+                                id="irrigation"
+                                checked={formData.irrigation}
+                                onChange={(e) => setFormData({ ...formData, irrigation: e.target.checked })}
+                            />
+                            <label htmlFor="irrigation">Irrigation Facility Available</label>
+                        </div>
+
+                        <div className={styles.checkbox}>
+                            <input
+                                type="checkbox"
+                                id="electricity"
+                                checked={formData.electricity}
+                                onChange={(e) => setFormData({ ...formData, electricity: e.target.checked })}
+                            />
+                            <label htmlFor="electricity">Electricity Available Nearby</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={styles.formSection}>
+                    <h2 className={styles.sectionTitle}>Garden Images</h2>
+
+                    <div className={styles.formGroup}>
+                        <label className={styles.label}>Upload Images</label>
+                        <input
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            onChange={handleFileSelect}
+                            className={styles.fileInput}
+                        />
+                        <div className={styles.imageGrid}>
+                            {selectedFiles.map((file, index) => (
+                                <div key={index} className={styles.imageContainer}>
+                                    <img
+                                        src={URL.createObjectURL(file)}
+                                        alt={`Preview ${index}`}
+                                        className={styles.previewImage}
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
                 {error && <div className={styles.error}>{error}</div>}
 
-                <button
-                    type="submit"
-                    disabled={uploading}
-                    className={styles.submitButton}
-                >
-                    {uploading ? 'Creating Garden...' : 'Create Garden'}
-                </button>
+                <div className={styles.formActions}>
+                    <button
+                        type="button"
+                        onClick={handleBackToDirectory}
+                        className={styles.cancelButton}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={uploading}
+                        className={styles.submitButton}
+                    >
+                        {uploading ? 'Creating Garden...' : 'Create Garden'}
+                    </button>
+                </div>
             </form>
         </div>
     );

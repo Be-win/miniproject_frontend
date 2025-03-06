@@ -570,7 +570,7 @@ const GardenProfilePage = ({user}) => {
 
                     {/* Reviews Grid */}
                     <div className={styles.reviewsGrid}>
-                        {reviews.slice(0, 4).map((review) => (
+                        {reviews.slice(0, 3).map((review) => (
                             <div key={review.id} className={styles.reviewCard}>
                                 <div className={styles.reviewHeader}>
                                     <span className={styles.reviewUser}>{review.user_name}</span>
@@ -585,7 +585,7 @@ const GardenProfilePage = ({user}) => {
                     </div>
 
                     {/* Show More Button */}
-                    {reviews.length > 4 && (
+                    {reviews.length > 3 && (
                         <div className={styles.showMoreContainer}>
                             <button
                                 className={styles.showMoreButton}

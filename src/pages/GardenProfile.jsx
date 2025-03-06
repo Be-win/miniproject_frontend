@@ -25,6 +25,9 @@ const GardenProfilePage = ({user}) => {
     const [message, setMessage] = useState("");
     const [userAllocations, setUserAllocations] = useState([]);
     const [allocationsLoading, setAllocationsLoading] = useState(true);
+    const [reviews, setReviews] = useState([]);
+    const [newReview, setNewReview] = useState({ rating: 0, comment: '' });
+    const [showAllReviews, setShowAllReviews] = useState(false);
 
     const userAllocation = userAllocations.find(a =>
         Number(a.garden_id) === Number(garden?.id)
@@ -34,29 +37,43 @@ const GardenProfilePage = ({user}) => {
         ['approved', 'active', 'pending_extension'].includes(allocationStatus) &&
         userAllocation.end_date;
 
-    const dummyReviews = [
-        {
-            id: 1,
-            user: "John Doe",
-            rating: 4.5,
-            comment: "This garden is amazing! So peaceful and well-maintained.",
-            date: "2025-02-15",
-        },
-        {
-            id: 2,
-            user: "Jane Smith",
-            rating: 5,
-            comment: "Love the variety of plants and the friendly community.",
-            date: "2025-02-16",
-        },
-        {
-            id: 3,
-            user: "Alice Johnson",
-            rating: 4,
-            comment: "Great place to relax and connect with nature.",
-            date: "2025-02-17",
-        },
-    ];
+    // const dummyReviews = [
+    //     {
+    //         id: 1,
+    //         user: "John Doe",
+    //         rating: 4.5,
+    //         comment: "This garden is amazing! So peaceful and well-maintained.",
+    //         date: "2025-02-15",
+    //     },
+    //     {
+    //         id: 2,
+    //         user: "Jane Smith",
+    //         rating: 5,
+    //         comment: "Love the variety of plants and the friendly community.",
+    //         date: "2025-02-16",
+    //     },
+    //     {
+    //         id: 3,
+    //         user: "Alice Johnson",
+    //         rating: 4,
+    //         comment: "Great place to relax and connect with nature.",
+    //         date: "2025-02-17",
+    //     },
+    // ];
+
+    // Fetch reviews
+    useEffect(() => {
+        const fetchReviews = async () => {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/reviews/garden/${id}`);
+                const data = await response.json();
+                setReviews(data);
+            } catch (error) {
+                console.error('Error fetching reviews:', error);
+            }
+        };
+        fetchReviews();
+    }, [id]);
 
     useEffect(() => {
         const fetchGardenDetails = async () => {
@@ -91,6 +108,33 @@ const GardenProfilePage = ({user}) => {
         fetchGardenDetails();
         fetchUserAllocations();
     }, [id, user]);
+
+    const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/reviews`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify({
+                    garden_id: garden.id,
+                    rating: newReview.rating,
+                    comment: newReview.comment,
+                }),
+            });
+
+            if (!response.ok) throw new Error('Failed to submit review');
+
+            const data = await response.json();
+            setReviews([data, ...reviews]);
+            setNewReview({ rating: 0, comment: '' });
+        } catch (error) {
+            console.error('Review submission error:', error);
+            alert(error.message);
+        }
+    };
 
     const handleLandRequest = async (e) => {
         e.preventDefault();
@@ -184,6 +228,8 @@ const GardenProfilePage = ({user}) => {
     const total = parseFloat(garden.total_land);
     const remainingLand = total - allocated;
     const isOwner = user?.id === garden.owner_id;
+
+    const hasReviewed = reviews.some(review => review.user_id === user?.id);
 
     return (
         <div>
@@ -489,25 +535,100 @@ const GardenProfilePage = ({user}) => {
                 {/* Reviews Section */}
                 <div className={styles.reviewsSection}>
                     <h2>User Reviews</h2>
+
+                    {/* Review Form */}
+                    {user && userAllocation &&
+                        ['approved', 'expired', 'active'].includes(allocationStatus) &&
+                        !hasReviewed && (
+                            <div className={styles.reviewForm}>
+                                <h3>Write a Review</h3>
+                                <form onSubmit={handleReviewSubmit}>
+                                    <div className={styles.ratingInput}>
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <button
+                                                type="button"
+                                                key={star}
+                                                className={`${styles.star} ${newReview.rating >= star ? styles.filled : ''}`}
+                                                onClick={() => setNewReview({ ...newReview, rating: star })}
+                                            >
+                                                ★
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <textarea
+                                        value={newReview.comment}
+                                        onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                                        placeholder="Share your experience..."
+                                        required
+                                    />
+                                    <button type="submit" className={styles.submitReviewButton}>
+                                        Submit Review
+                                    </button>
+                                </form>
+                            </div>
+                        )}
+
+                    {/* Reviews Grid */}
                     <div className={styles.reviewsGrid}>
-                        {dummyReviews.map((review, index) => (
-                            <div
-                                key={review.id}
-                                className={styles.reviewCard}
-                                style={{ '--index': index }} // Add index for animation
-                            >
+                        {reviews.slice(0, 4).map((review) => (
+                            <div key={review.id} className={styles.reviewCard}>
                                 <div className={styles.reviewHeader}>
-                                    <span className={styles.reviewUser}>{review.user}</span>
+                                    <span className={styles.reviewUser}>{review.user_name}</span>
                                     <span className={styles.reviewRating}>⭐ {review.rating}</span>
                                 </div>
                                 <p className={styles.reviewComment}>{review.comment}</p>
                                 <p className={styles.reviewDate}>
-                                    Reviewed on: {new Date(review.date).toLocaleDateString()}
+                                    Reviewed on: {new Date(review.created_at).toLocaleDateString()}
                                 </p>
                             </div>
                         ))}
                     </div>
+
+                    {/* Show More Button */}
+                    {reviews.length > 4 && (
+                        <div className={styles.showMoreContainer}>
+                            <button
+                                className={styles.showMoreButton}
+                                onClick={() => setShowAllReviews(true)}
+                            >
+                                Show All Reviews ({reviews.length})
+                            </button>
+                        </div>
+                    )}
+
+                    {/* All Reviews Modal */}
+                    {showAllReviews && (
+                        <div className={styles.reviewsModalOverlay} onClick={() => setShowAllReviews(false)}>
+                            <div className={styles.reviewsModalContent} onClick={(e) => e.stopPropagation()}>
+                                <div className={styles.reviewsModalHeader}>
+                                    <h3>All Reviews</h3>
+                                    <button
+                                        className={styles.closeModalButton}
+                                        onClick={() => setShowAllReviews(false)}
+                                    >
+                                        &times;
+                                    </button>
+                                </div>
+
+                                <div className={styles.reviewsModalList}>
+                                    {reviews.map((review) => (
+                                        <div key={review.id} className={styles.reviewCard}>
+                                            <div className={styles.reviewHeader}>
+                                                <span className={styles.reviewUser}>{review.user_name}</span>
+                                                <span className={styles.reviewRating}>⭐ {review.rating}</span>
+                                            </div>
+                                            <p className={styles.reviewComment}>{review.comment}</p>
+                                            <p className={styles.reviewDate}>
+                                                Reviewed on: {new Date(review.created_at).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
+
             </div>
             <Footer/>
         </div>

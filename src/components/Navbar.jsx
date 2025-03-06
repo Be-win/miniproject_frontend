@@ -11,6 +11,7 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState([]);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [profilePic, setProfilePic] = useState(null);
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -41,6 +42,35 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
         };
 
         fetchNotifications();
+    }, [isLoggedIn, onLogout, navigate]);
+
+
+    //fetch profile picture
+    useEffect(() => {
+        const fetchProfilePic = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/users/profile-pic`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }
+                );
+
+                if (response.status === 403) {
+                    if (onLogout) onLogout();
+                    navigate('/login', { state: { error: "Session expired. Please log in again." } });
+                    return;
+                }
+
+                const { profilePicUrl } = await response.json();
+                setProfilePic(profilePicUrl);
+            } catch (error) {
+                console.error("Error fetching profile picture:", error);
+            }
+        };
+
+        if (isLoggedIn) fetchProfilePic();
     }, [isLoggedIn, onLogout, navigate]);
 
     const handleNotificationClick = async (notification) => {
@@ -83,7 +113,7 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
     return (
         <Navbar expand="lg" bg="light" fixed="top" className={styles.customNavbar}>
             <Container>
-                <Navbar.Brand href="/home">🌱 Community Garden</Navbar.Brand>
+                <Navbar.Brand href="/home">🌱 Willow & Thrive</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav" className={styles.navbarCollapse}>
                     <Nav className="ms-auto me-5 mb-2">
@@ -98,7 +128,12 @@ const CustomNavbar = ({ isLoggedIn, user, setUser, onLogout }) => {
                             <NavDropdown
                                 title={
                                     <>
-                                        <img src={user.profilePic} alt="" className={styles.profilePic} /> {user.name}
+                                        <img
+                                            src={profilePic || `https://avatar.iran.liara.run/username?username=${user.name}`}
+                                            alt="Profile"
+                                            className={styles.profilePic}
+                                        />
+                                        {user.name}
                                     </>
                                 }
                                 id="user-dropdown"

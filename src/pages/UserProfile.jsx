@@ -225,7 +225,9 @@ const UserProfile = ({ user }) => {
                     </form>
                 ) : (
                     <div className={styles.profileDetails}>
-                        <p className={styles.bio}>{profile.bio || 'No bio yet'}</p>
+                        <p className={styles.bio} style={{ whiteSpace: 'pre-line' }}>
+                            {profile.bio || 'No bio yet'}
+                        </p>
                         <div className={styles.detailsGrid}>
                             <div className={styles.detailItem}>
                                 <span>Phone:</span>

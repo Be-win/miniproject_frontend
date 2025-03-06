@@ -1,225 +1,284 @@
-/* General Styles */
+/* SustainabilityDashboard.module.css */
+
 .sustainabilityDashboard {
-    background-color: #F4F3F2;
     min-height: 100vh;
-    padding: 2rem 1rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
-    margin-top: 55px;
+    padding: 2rem;
+    font-family: 'Open Sans', system-ui, sans-serif;
+    color: #2d3436;
+    margin-top: 56px;
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
+/* Main Heading */
 .sustainabilityDashboard h1 {
-    font-size: 2.5rem;
-    color: #2C5F2D;
+    font-size: 2.8rem;
+    color: #1B5E20;
     text-align: center;
+    margin-bottom: 3rem;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 1.2rem;
+}
+
+.sustainabilityDashboard h1::after {
+    content: '🌿';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    opacity: 0.8;
+}
+
+/* Messages */
+.errorMessage,
+.successMessage {
+    padding: 1.2rem 2rem;
+    border-radius: 12px;
     margin-bottom: 2rem;
     font-weight: 600;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
 }
 
-/* Error and Success Messages */
 .errorMessage {
-    background-color: #ffebee;
-    color: #c62828;
-    border: 1px solid #ffcdd2;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    text-align: center;
-    animation: fadeIn 0.5s ease-in-out;
+    background: #FFEBEE;
+    color: #C62828;
+    border: 2px solid #EF9A9A;
 }
 
 .successMessage {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-    border: 1px solid #c8e6c9;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    text-align: center;
-    animation: fadeIn 0.5s ease-in-out;
+    background: #E8F5E9;
+    color: #2E7D32;
+    border: 2px solid #A5D6A7;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Topic of the Day */
+/* Topic Section */
 .topicOfTheDay {
-    background-color: #B1D289;
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+    padding: 2.5rem;
+    border-radius: 20px;
+    margin-bottom: 3rem;
+    box-shadow: 0 8px 24px rgba(56, 142, 60, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.topicOfTheDay::before {
+    content: '';
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="%234CAF50" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm6 9.09c0 4-2.55 7.7-6 8.83-3.45-1.13-6-4.82-6-8.83v-4.7l6-2.25 6 2.25v4.7z"/></svg>');
+    opacity: 0.1;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .topicOfTheDay h2 {
     margin: 0;
     font-size: 1.8rem;
-    color: #2C5F2D;
-}
-
-/* Article Form */
-.articleForm {
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.articleForm input[type="text"],
-.articleForm textarea {
-    width: 100%;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border: 2px solid #B1D289;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-}
-
-.articleForm input[type="text"]:focus,
-.articleForm textarea:focus {
-    outline: none;
-    border-color: #2C5F2D;
-    box-shadow: 0 0 0 3px rgba(177, 210, 137, 0.3);
-}
-
-.articleForm button {
-    background-color: #B1D289;
-    color: #2C5F2D;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 8px;
+    color: #2E7D32;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
 }
 
-.articleForm button:hover {
-    background-color: #9bbf7a;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.articleForm button:disabled {
-    background-color: #D3E8C1;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-/* Top Articles */
+/* Articles List */
 .topArticles {
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 12px 28px rgba(76, 175, 80, 0.08);
 }
 
+.topArticles h2 {
+    color: #1B5E20;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #E0F2E9;
+}
+
+/* Article Card */
 .article {
-    background-color: #F4F3F2;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    transition: all 0.25s ease;
+    border: 2px solid transparent;
 }
 
 .article:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(76, 175, 80, 0.1);
+    border-color: #C8E6C9;
 }
 
 .article h3 {
-    color: #2C5F2D;
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-}
-
-.article p {
-    color: #666;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-}
-
-.article button {
-    background-color: #B1D289;
-    color: #2C5F2D;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-}
-
-.article button:hover {
-    background-color: #9bbf7a;
-}
-
-/* Show More/Less Button */
-.showMoreBtn {
-    display: block;
-    width: fit-content;
-    margin: 2rem auto 0;
-    padding: 0.8rem 2rem;
-    background-color: #B1D289;
-    color: #2C5F2D;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    color: #2E7D32;
+    margin: 0 0 1rem;
+    font-size: 1.4rem;
     font-weight: 600;
 }
 
-.showMoreBtn:hover {
-    background-color: #9bbf7a;
+/* Content Section */
+.articleContent {
+    color: #455A64;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    position: relative;
+    cursor: pointer;
+}
+
+.articleContent p {
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+.readMoreToggle {
+    display: inline-block;
+    color: #43A047;
+    font-weight: 600;
+    margin-top: 1rem;
+    transition: all 0.2s ease;
+}
+
+.readMoreToggle:hover {
+    color: #1B5E20;
+}
+
+/* Voting Controls */
+.voteButtons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.upvoteButton,
+.downvoteButton {
+    padding: 0.6rem 1.4rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.upvoteButton {
+    background: #E8F5E9;
+    color: #2E7D32;
+    border: 2px solid #C8E6C9;
+}
+
+.upvoteButton:hover:not(.active) {
+    background: #C8E6C9;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.downvoteButton {
+    background: #FFEBEE;
+    color: #C62828;
+    border: 2px solid #EF9A9A;
+}
+
+.downvoteButton:hover:not(.active) {
+    background: #EF9A9A;
+    transform: translateY(-2px);
+}
+
+.upvoteButton.active {
+    background: #43A047;
+    color: white;
+    border-color: #43A047;
+}
+
+.downvoteButton.active {
+    background: #C62828;
+    color: white;
+    border-color: #C62828;
+}
+
+/* Article Form */
+.articleForm {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    margin-bottom: 3rem;
+    box-shadow: 0 12px 28px rgba(76, 175, 80, 0.08);
+    border-left: 6px solid #4CAF50;
+}
+
+.articleForm input,
+.articleForm textarea {
+    width: 100%;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    border: 2px solid #E0F2E9;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.articleForm input:focus,
+.articleForm textarea:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.articleForm textarea {
+    height: 160px;
+    resize: vertical;
+}
+
+.articleForm button {
+    background: #4CAF50;
+    color: white;
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.articleForm button:hover {
+    background: #43A047;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .sustainabilityDashboard {
-        padding: 1rem;
-        margin-top: 50px;
-    }
-
-    .sustainabilityDashboard h1 {
-        font-size: 2rem;
-    }
-
-    .topicOfTheDay h2 {
-        font-size: 1.5rem;
-    }
-
-    .articleForm,
-    .topArticles {
         padding: 1.5rem;
     }
 
-    .articleForm button,
-    .showMoreBtn {
-        width: 100%;
+    .article {
+        padding: 1.5rem;
+    }
+
+    .voteButtons {
+        flex-direction: column;
     }
 }
 
 @media (max-width: 480px) {
     .sustainabilityDashboard h1 {
-        font-size: 1.8rem;
+        font-size: 2rem;
     }
 
-    .articleForm input[type="text"],
-    .articleForm textarea {
-        font-size: 0.9rem;
+    .articleForm {
+        padding: 1.5rem;
     }
 
-    .articleForm button,
-    .showMoreBtn {
-        padding: 0.8rem;
+    .topicOfTheDay h2 {
+        font-size: 1.4rem;
     }
 }

@@ -64,8 +64,8 @@ const AyurvedicCropSuggestions = ({ garden }) => {
         const month = new Date().getMonth() + 1;
         if (month >= 3 && month <= 5) return 'Summer (Grishma)';
         if (month >= 6 && month <= 9) return 'Monsoon (Varsha)';
-        if (month >= 10 && month <= 11) return 'Autumn (Sharad)';
-        return 'Winter (Hemanta)';
+        if (month >= 10 && month <= 11) return 'Autumn (Sharada)';
+        return 'Winter (Shishira)';
     };
 
     if (loading) return <div className={styles.loading}>Generating Ayurvedic suggestions...</div>;

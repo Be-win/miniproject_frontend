@@ -2,95 +2,132 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #f4f6f9;
 }
 
 .directory-content {
     flex: 1;
     padding: 2rem;
-    margin-top: 70px; /* Space below navbar */
+    margin-top: 70px;
 }
 
 .controls-section {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1rem;
-    margin-bottom: 2rem;
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto 2rem;
+    padding: 0 1rem;
 }
 
 .search-input {
-    flex: 1;
+    flex: 1 1 300px;
     padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
     font-size: 1rem;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 2px 6px rgba(76, 175, 80, 0.2);
 }
 
 .type-filter {
+    flex: 0 0 200px;
     padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
     background: white;
+    font-size: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.3s ease;
+}
+
+.type-filter:focus {
+    outline: none;
+    border-color: #4CAF50;
 }
 
 .gardens-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 1rem;
 }
 
 .garden-card {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.garden-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .garden-image {
     width: 100%;
-    height: 200px;
+    height: 250px;
     object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.garden-card:hover .garden-image {
+    transform: scale(1.05);
 }
 
 .card-content {
-    padding: 1.2rem;
+    padding: 1.5rem;
+    background-color: #ffffff;
 }
 
 .garden-name {
-    margin: 0 0 0.5rem;
-    color: #333;
+    margin: 0 0 0.75rem;
+    color: #2c3e50;
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
 .garden-address {
     margin: 0 0 1rem;
-    color: #666;
-    font-size: 0.9rem;
+    color: #7f8c8d;
+    font-size: 0.95rem;
 }
 
 .type-badge {
     display: inline-block;
-    padding: 0.3rem 0.8rem;
+    padding: 0.4rem 1rem;
     border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
     text-transform: capitalize;
+    letter-spacing: 0.5px;
 }
 
 .type-badge.community {
-    background: #c8e6c9;
+    background: #e8f5e9;
     color: #2e7d32;
 }
 
 .type-badge.charity {
-    background: #bbdefb;
+    background: #e3f2fd;
     color: #1565c0;
 }
 
 .type-badge.rent {
-    background: #ffcdd2;
+    background: #ffebee;
     color: #c62828;
 }
 
@@ -98,29 +135,63 @@
 .error-message {
     text-align: center;
     padding: 2rem;
+    font-size: 1.1rem;
     color: #666;
 }
 
 .error-message {
     color: #dc3545;
+    background-color: #fff0f0;
+    border-radius: 8px;
 }
 
 .create-garden-btn {
-    padding: 0.8rem 1.5rem;
+    padding: 0.9rem 1.8rem;
     background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 1rem;
-    transition: background-color 0.3s ease;
-    white-space: nowrap;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
 }
 
 .create-garden-btn:hover {
     background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .create-garden-btn:active {
     background-color: #3d8b40;
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16);
+}
+
+@media (max-width: 768px) {
+    .controls-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+        padding: 0 0.5rem;
+    }
+
+    .search-input,
+    .type-filter,
+    .create-garden-btn {
+        width: 100%;
+        padding: 0.6rem;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .gardens-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0.5rem;
+    }
 }

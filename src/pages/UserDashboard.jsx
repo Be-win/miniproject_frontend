@@ -389,7 +389,7 @@ const ResourcesList = ({resources, resourceRequests}) => (
                     <p>Quantity: {resource.quantity}</p>
                     {resource.price && (
                         <div className={styles.resourcePrice}>
-                            ${Number(resource.price).toFixed(2)}
+                            ₹{Number(resource.price).toFixed(2)}
                         </div>
                     )}
                     <p>Available: {new Date(resource.available_from).toLocaleDateString()} -{' '}

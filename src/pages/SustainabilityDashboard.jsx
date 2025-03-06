@@ -19,20 +19,23 @@ const ArticleForm = ({ onSubmit }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         const title = event.target.title.value.trim();
-        const content = event.target.content.value.trim();
+        const content = event.target.content.value; // Get raw content
 
-        if (!title || !content) {
+        // Validate trimmed content
+        const trimmedContent = content.trim();
+
+        if (!title || !trimmedContent) {
             alert("Both title and content are required.");
             return;
         }
 
-        if (title.length < 5 || content.length < 50) {
+        if (title.length < 5 || trimmedContent.length < 50) {
             alert("Title must be at least 5 characters, and content must be at least 50 characters.");
             return;
         }
 
         setIsSubmitting(true);
-        onSubmit({ title, content })
+        onSubmit({ title, content: trimmedContent }) // Submit trimmed content
             .finally(() => setIsSubmitting(false));
         event.target.reset();
     };
@@ -51,6 +54,7 @@ const ArticleForm = ({ onSubmit }) => {
                 placeholder="Write your article here..."
                 required
                 aria-label="Article Content"
+                style={{ whiteSpace: 'pre-wrap' }}
             />
             <button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Submitting..." : "Submit Article"}
@@ -59,13 +63,25 @@ const ArticleForm = ({ onSubmit }) => {
     );
 };
 
-const ArticleList = ({ articles, onUpvote, showAll, toggleShowAll, isLoading }) => {
-    if (isLoading) return <p>Loading Articles...</p>;
+const ArticleList = ({ articles, onUpvote, onDownvote, showAll, toggleShowAll, isLoading }) => {
+    const [expandedArticles, setExpandedArticles] = useState({});
 
-    const upvotedArticles = JSON.parse(sessionStorage.getItem("upvotedArticles")) || [];
+    if (isLoading) return <p className={styles.loadingText}>Loading Articles...</p>;
 
     const validArticles = Array.isArray(articles) ? articles : [];
-    if (validArticles.length === 0) return <p>No articles found.</p>;
+    if (validArticles.length === 0) return <p className={styles.noContent}>No articles found.</p>;
+
+    const toggleExpand = (articleId) => {
+        setExpandedArticles(prev => ({
+            ...prev,
+            [articleId]: !prev[articleId]
+        }));
+    };
+
+    const truncateContent = (content, maxLength = 150) => {
+        if (content.length <= maxLength) return content;
+        return content.substring(0, maxLength) + '...';
+    };
 
     return (
         <div className={styles.topArticles}>
@@ -73,16 +89,35 @@ const ArticleList = ({ articles, onUpvote, showAll, toggleShowAll, isLoading }) 
             {validArticles.slice(0, showAll ? validArticles.length : 10).map((article) => (
                 <div key={article.id} className={styles.article}>
                     <h3>{article.title}</h3>
-                    <div style={{ whiteSpace: 'pre-wrap' }}>
-                        <p>{article.content}</p>
-                    </div>
-                    <button
-                        onClick={() => onUpvote(article.id)}
-                        disabled={upvotedArticles.includes(article.id)}
-                        style={{ backgroundColor: upvotedArticles.includes(article.id) ? "#ccc" : "" }}
+                    <div
+                        className={`${styles.articleContent} ${expandedArticles[article.id] ? styles.expanded : ''}`}
+                        onClick={() => toggleExpand(article.id)}
                     >
-                        {upvotedArticles.includes(article.id) ? "Upvoted" : `Upvote (${article.upvotes || 0})`}
-                    </button>
+                        <p>
+                            {expandedArticles[article.id]
+                                ? article.content
+                                : truncateContent(article.content)}
+                        </p>
+                        <span className={styles.readMoreToggle}>
+                            {expandedArticles[article.id] ? "Show Less" : "Read More"}
+                        </span>
+                    </div>
+                    <div className={styles.articleFooter}>
+                        <div className={styles.voteButtons}>
+                            <button
+                                className={`${styles.upvoteButton} ${article.has_upvoted ? styles.active : ''}`}
+                                onClick={() => onUpvote(article.id)}
+                            >
+                                ↑ {article.upvotes}
+                            </button>
+                            <button
+                                className={`${styles.downvoteButton} ${article.has_downvoted ? styles.active : ''}`}
+                                onClick={() => onDownvote(article.id)}
+                            >
+                                ↓ {article.downvotes}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             ))}
             {validArticles.length > 10 && (
@@ -93,7 +128,6 @@ const ArticleList = ({ articles, onUpvote, showAll, toggleShowAll, isLoading }) 
         </div>
     );
 };
-
 
 const SustainabilityDashboard = ({ user }) => {
     const [topicOfTheDay, setTopicOfTheDay] = useState(null);
@@ -113,65 +147,79 @@ const SustainabilityDashboard = ({ user }) => {
     }, []);
 
     useEffect(() => {
-        axios
-            .get(`${import.meta.env.VITE_API_BASE_URL}/sustainability/top-articles`)
-            .then((response) => {
-                if (Array.isArray(response.data.articles)) {
-                    setArticles(response.data.articles);
-                } else {
-                    console.error("Expected an array of articles, but got:", response.data);
-                    setArticles([]);
-                }
-            })
-            .catch(() => setError("Failed to fetch articles."))
-            .finally(() => setIsLoadingArticles(false));
+        const fetchArticles = async () => {
+            try {
+                const response = await axios.get(
+                    `${import.meta.env.VITE_API_BASE_URL}/sustainability/top-articles`,
+                    { withCredentials: true }
+                );
+                setArticles(response.data?.articles || []);
+            } catch (err) {
+                setError("Failed to fetch articles.");
+            } finally {
+                setIsLoadingArticles(false);
+            }
+        };
+        fetchArticles();
     }, []);
 
     const handleSubmitArticle = ({ title, content }) => {
-        console.log("Submitting article:", { title, content }); // Debugging
         return axios
             .post(`${import.meta.env.VITE_API_BASE_URL}/sustainability/submit-article`, {
                 userId: user?.id,
                 topicId: topicOfTheDay?.id,
                 title,
                 content,
-            })
+            }, { withCredentials: true })
             .then((response) => {
-                console.log("Article submitted successfully:", response.data); // Debugging
                 setArticles([response.data.article, ...articles]);
                 setSuccessMessage("Your article has been submitted!");
                 setTimeout(() => setSuccessMessage(""), 3000);
             })
             .catch((error) => {
-                setError(error.response?.data?.error || error.message || "An unknown error occurred");
+                setError(error.response?.data?.error || error.message || "Submission failed");
             });
     };
 
-    const handleUpvote = (articleId) => {
-        // Get the list of upvoted articles from sessionStorage
-        const upvotedArticles = JSON.parse(sessionStorage.getItem("upvotedArticles")) || [];
-
-        // Check if the user has already upvoted this article
-        if (upvotedArticles.includes(articleId)) {
-            setError("You can only upvote an article once per session.");
-            return;
+    const handleUpvote = async (articleId) => {
+        try {
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_BASE_URL}/sustainability/upvote-article/${articleId}`,
+                {}, // Empty request body
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    withCredentials: true
+                }
+            );
+            setArticles(prev => prev.map(article =>
+                article.id === articleId ? response.data.article : article
+            ));
+        } catch (error) {
+            setError(error.response?.data?.error || "Failed to update vote.");
         }
-
-        axios
-            .post(`${import.meta.env.VITE_API_BASE_URL}/sustainability/upvote-article/${articleId}`)
-            .then((response) => {
-                const updatedArticle = response.data.article;
-                const updatedArticles = articles.map((article) =>
-                    article.id === articleId ? updatedArticle : article
-                );
-                setArticles(updatedArticles);
-
-                // Store the upvoted article ID in sessionStorage
-                sessionStorage.setItem("upvotedArticles", JSON.stringify([...upvotedArticles, articleId]));
-            })
-            .catch(() => setError("Failed to upvote the article."));
     };
 
+    const handleDownvote = async (articleId) => {
+        try {
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_BASE_URL}/sustainability/downvote-article/${articleId}`,
+                {}, // Empty request body
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    withCredentials: true
+                }
+            );
+            setArticles(prev => prev.map(article =>
+                article.id === articleId ? response.data.article : article
+            ));
+        } catch (error) {
+            setError(error.response?.data?.error || "Failed to update vote.");
+        }
+    };
 
     return (
         <ErrorBoundary>
@@ -180,11 +228,14 @@ const SustainabilityDashboard = ({ user }) => {
                 <h1>Sustainability Dashboard</h1>
                 {error && <div className={styles.errorMessage}>{error}</div>}
                 {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
+
                 <TopicOfTheDay topic={topicOfTheDay} isLoading={isLoadingTopic} />
                 <ArticleForm onSubmit={handleSubmitArticle} />
+
                 <ArticleList
                     articles={articles}
                     onUpvote={handleUpvote}
+                    onDownvote={handleDownvote}
                     showAll={showAll}
                     toggleShowAll={() => setShowAll(!showAll)}
                     isLoading={isLoadingArticles}

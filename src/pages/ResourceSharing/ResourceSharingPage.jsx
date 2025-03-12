@@ -318,7 +318,7 @@ const ResourceSharingPage = ({ user }) => {
                                     <span>Type: {resource.type}</span>
                                     <span>Quantity: {resource.quantity}</span>
                                     {resource.type === 'forSale' && (
-                                        <span>Price: ${(Number(resource.price) || 0).toFixed(2)}</span>
+                                        <span>Price: ₹{(Number(resource.price) || 0).toFixed(2)}</span>
                                     )}
                                     <span>Available: {formatDate(resource.available_from)} - {formatDate(resource.available_to)}</span>
                                     <span>Contact: {resource.contact}</span>

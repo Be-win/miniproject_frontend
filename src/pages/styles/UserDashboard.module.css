@@ -443,3 +443,167 @@
     color: #94a3b8;
     font-style: italic;
 }
+
+/* Sustainability Articles */
+.articleCard {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.articleHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.articleActions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.buttonEdit {
+    background: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.buttonDelete {
+    background: #ef4444;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.articleContent {
+    color: #4a5568;
+    line-height: 1.6;
+    white-space: pre-wrap; /* Preserve line breaks and spaces */
+    margin-bottom: 1rem;
+}
+
+.articleContent p {
+    margin-bottom: 1em;
+}
+
+.articleMeta {
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+}
+
+.voteSection {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.voteButton {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    background: #f8fafc;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hasUpvoted {
+    background: #dcfce7;
+    border-color: #166534;
+}
+
+.hasDownvoted {
+    background: #fee2e2;
+    border-color: #b91c1c;
+}
+/* Edit Modal */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #4a5568;
+    font-weight: 600;
+}
+
+.formGroup input,
+.formGroup textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.formGroup textarea {
+    resize: vertical;
+}
+
+.modalActions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+.buttonSave {
+    background: #3b82f6;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.buttonCancel {
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #e2e8f0;
+}
+
+.buttonSave:hover {
+    background: #2563eb;
+}
+
+.buttonCancel:hover {
+    background: #e2e8f0;
+}

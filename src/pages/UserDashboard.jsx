@@ -11,6 +11,40 @@ const UserDashboard = ({user}) => {
     const [landRequests, setLandRequests] = useState([]);
     const [resources, setResources] = useState([]);
     const [resourceRequests, setResourceRequests] = useState([]);
+    const [userArticles, setUserArticles] = useState([]);
+    const [editArticle, setEditArticle] = useState(null);
+
+    const handleEditArticle = async (articleId, newData) => {
+        try {
+            const res = await axios.put(
+                `${import.meta.env.VITE_API_BASE_URL}/sustainability/articles/${articleId}`,
+                newData,
+                { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+            );
+            setUserArticles(prev =>
+                prev.map(article =>
+                    article.id === articleId ? { ...article, ...res.data.article } : article
+                )
+            );
+            setEditArticle(null); // Close modal after successful update
+        } catch (error) {
+            console.error('Error updating article:', error);
+        }
+    };
+
+    const handleDeleteArticle = async (articleId) => {
+        if (window.confirm('Are you sure you want to delete this article?')) {
+            try {
+                await axios.delete(
+                    `${import.meta.env.VITE_API_BASE_URL}/sustainability/articles/${articleId}`,
+                    { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+                );
+                setUserArticles(prev => prev.filter(article => article.id !== articleId));
+            } catch (error) {
+                console.error('Error deleting article:', error);
+            }
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,6 +65,11 @@ const UserDashboard = ({user}) => {
                 setLandRequests(requestsRes.data.data);
                 setResources(resourcesRes.data);
                 setResourceRequests(resourceReqRes.data);
+                const articlesRes = await axios.get(
+                    `${import.meta.env.VITE_API_BASE_URL}/sustainability/my-articles`,
+                    { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+                );
+                setUserArticles(articlesRes.data.articles);
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
             }
@@ -45,6 +84,14 @@ const UserDashboard = ({user}) => {
                 return <LandRequestsList requests={landRequests}/>;
             case 'resources':
                 return <ResourcesList resources={resources} resourceRequests={resourceRequests}/>;
+            case 'articles':
+                return (
+                    <ArticlesList
+                        articles={userArticles}
+                        onEdit={setEditArticle}
+                        onDelete={handleDeleteArticle}
+                    />
+                );
             case 'gardens':
             default:
                 return selectedGarden ? (
@@ -90,13 +137,72 @@ const UserDashboard = ({user}) => {
                     >
                         Resources
                     </button>
+                    <button
+                        onClick={() => setSelectedTab('articles')}
+                        className={`${styles.sidebarButton} ${
+                            selectedTab === 'articles' ? styles.sidebarButtonActive : ''
+                        }`}
+                    >
+                        My Articles
+                    </button>
                 </div>
                 <div className={styles.main}>
                     {renderContent()}
                 </div>
             </div>
+            {editArticle && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <h2>Edit Article</h2>
+                        <form onSubmit={(e) => {
+                            e.preventDefault();
+                            handleEditArticle(editArticle.id, {
+                                title: e.target.title.value,
+                                content: e.target.content.value
+                            });
+                        }}>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="title">Title</label>
+                                <input
+                                    type="text"
+                                    id="title"
+                                    name="title"
+                                    defaultValue={editArticle.title}
+                                    required
+                                />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="content">Content</label>
+                                <textarea
+                                    id="content"
+                                    name="content"
+                                    defaultValue={editArticle.content}
+                                    required
+                                    rows="6"
+                                />
+                            </div>
+                            <div className={styles.modalActions}>
+                                <button
+                                    type="button"
+                                    className={styles.buttonCancel}
+                                    onClick={() => setEditArticle(null)}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className={styles.buttonSave}
+                                >
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
             <Footer/>
         </div>
+
     );
 };
 
@@ -445,5 +551,68 @@ const ResourcesList = ({resources, resourceRequests}) => (
         )}
     </div>
 );
+
+const ArticlesList = ({ articles, onEdit, onDelete}) => {
+    return (
+        <div className={styles.gardensList}>
+            <h2>My Articles</h2>
+            {articles.length === 0 ? (
+                <div className={styles.card}>
+                    <p className={styles.mutedText}>No articles found. Submit your first article!</p>
+                </div>
+            ) : (
+                articles.map(article => (
+                    <div key={article.id} className={styles.articleCard}>
+                        <div className={styles.articleHeader}>
+                            <h3>{article.title}</h3>
+                            <div className={styles.articleActions}>
+                                <button
+                                    className={styles.buttonEdit}
+                                    onClick={() => onEdit(article)}
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    className={styles.buttonDelete}
+                                    onClick={() => onDelete(article.id)}
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                        <p className={styles.articleContent}>
+                            {article.content.split('\n').map((line, index) => (
+                                <span key={index}>
+                                    {line}
+                                    <br />
+                                </span>
+                            ))}
+                        </p>
+
+                        <div className={styles.articleMeta}>
+                            <span>📅 Published: {new Date(article.created_at).toLocaleDateString()}</span>
+                            {article.updated_at && (
+                                <span> (Edited: {new Date(article.updated_at).toLocaleDateString()})</span>
+                                )}
+                        </div>
+
+                        <div className={styles.voteSection}>
+                            <button
+                                className={`${styles.voteButton} ${article.has_upvoted ? styles.hasUpvoted : ''}`}
+                            >
+                                👍 {article.upvotes}
+                            </button>
+                            <button
+                                className={`${styles.voteButton} ${article.has_downvoted ? styles.hasDownvoted : ''}`}
+                            >
+                                👎 {article.downvotes}
+                            </button>
+                        </div>
+                    </div>
+                ))
+            )}
+        </div>
+    );
+};
 
 export default UserDashboard;

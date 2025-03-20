@@ -139,12 +139,47 @@ const SustainabilityDashboard = ({ user }) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios
-            .get(`${import.meta.env.VITE_API_BASE_URL}/sustainability/topic-of-the-day`)
-            .then((response) => setTopicOfTheDay(response.data?.topic))
-            .catch(() => setError("Failed to fetch Topic of the Day."))
-            .finally(() => setIsLoadingTopic(false));
+        const getDailyTopic = async () => {
+            const today = new Date().toLocaleDateString();
+            const cachedTopic = localStorage.getItem('dailyTopic');
+            const cachedDate = localStorage.getItem('dailyTopicDate');
+
+            // Return cached topic if it exists and is from today
+            if (cachedTopic && cachedDate === today) {
+                setTopicOfTheDay(JSON.parse(cachedTopic));
+                setIsLoadingTopic(false);
+                return;
+            }
+
+            // Fetch new topic from API
+            try {
+                const response = await axios.get(
+                    `${import.meta.env.VITE_API_BASE_URL}/sustainability/topic-of-the-day`
+                );
+                const newTopic = response.data?.topic;
+
+                // Cache the new topic with today's date
+                localStorage.setItem('dailyTopic', JSON.stringify(newTopic));
+                localStorage.setItem('dailyTopicDate', today);
+
+                setTopicOfTheDay(newTopic);
+            } catch (error) {
+                setError("Failed to fetch Topic of the Day.");
+            } finally {
+                setIsLoadingTopic(false);
+            }
+        };
+
+        getDailyTopic();
     }, []);
+
+    // useEffect(() => {
+    //     axios
+    //         .get(`${import.meta.env.VITE_API_BASE_URL}/sustainability/topic-of-the-day`)
+    //         .then((response) => setTopicOfTheDay(response.data?.topic))
+    //         .catch(() => setError("Failed to fetch Topic of the Day."))
+    //         .finally(() => setIsLoadingTopic(false));
+    // }, []);
 
     useEffect(() => {
         const fetchArticles = async () => {

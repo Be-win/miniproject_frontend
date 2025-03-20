@@ -37,30 +37,6 @@ const GardenProfilePage = ({user}) => {
         ['approved', 'active', 'pending_extension'].includes(allocationStatus) &&
         userAllocation.end_date;
 
-    // const dummyReviews = [
-    //     {
-    //         id: 1,
-    //         user: "John Doe",
-    //         rating: 4.5,
-    //         comment: "This garden is amazing! So peaceful and well-maintained.",
-    //         date: "2025-02-15",
-    //     },
-    //     {
-    //         id: 2,
-    //         user: "Jane Smith",
-    //         rating: 5,
-    //         comment: "Love the variety of plants and the friendly community.",
-    //         date: "2025-02-16",
-    //     },
-    //     {
-    //         id: 3,
-    //         user: "Alice Johnson",
-    //         rating: 4,
-    //         comment: "Great place to relax and connect with nature.",
-    //         date: "2025-02-17",
-    //     },
-    // ];
-
     // Fetch reviews
     useEffect(() => {
         const fetchReviews = async () => {
@@ -230,7 +206,6 @@ const GardenProfilePage = ({user}) => {
     const isOwner = user?.id === garden.owner_id;
 
     const hasReviewed = reviews.some(review => review.user_id === user?.id);
-
     return (
         <div>
             <Navbar isLoggedIn={!!user} user={user}/>
@@ -447,22 +422,18 @@ const GardenProfilePage = ({user}) => {
                                         <button
                                             className={styles.requestLandButton}
                                             onClick={() => setShowRequestModal(true)}
-                                            disabled={hasAllocation && allocationStatus !== 'expired'}
+                                            disabled={userAllocation && allocationStatus !== 'expired'}
                                         >
-                                            {hasAllocation ? (
-                                                allocationStatus === 'pending_extension' ? (
-                                                    `Active until ${new Date(userAllocation.end_date).toLocaleDateString('en-US', {
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric'
-                                                    })}`
-                                                ) : (
-                                                    `Active until ${new Date(userAllocation.end_date).toLocaleDateString('en-US', {
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric'
-                                                    })}`
-                                                )
+                                            {userAllocation ? (
+                                                allocationStatus === 'pending' ? (
+                                                    "Previous Request Pending"
+                                                ) : allocationStatus === 'pending_extension' ? (
+                                                    `Active until ${new Date(userAllocation.end_date).toLocaleDateString()}`
+                                                ) : ['approved', 'active'].includes(allocationStatus) ? (
+                                                    `Active until ${new Date(userAllocation.end_date).toLocaleDateString()}`
+                                                ) : allocationStatus === 'expired' ? (
+                                                    "Expired"
+                                                ) : "Request Land"
                                             ) : "Request Land"}
                                         </button>
 

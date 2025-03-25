@@ -181,7 +181,7 @@ const CreateGardenPage: React.FC<{ user: any }> = ({ user }) => {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Total Land Area (m²)</label>
+                            <label className={styles.label}>Total Land Area (cents)</label>
                             <input
                                 type="number"
                                 required
@@ -225,8 +225,8 @@ const CreateGardenPage: React.FC<{ user: any }> = ({ user }) => {
                         <label className={styles.label}>Select Location on Map</label>
                         <div className={styles.mapContainer}>
                             <MapContainer
-                                center={[51.505, -0.09]}
-                                zoom={13}
+                                center={[10.8505, 76.2711]}
+                                zoom={8}
                                 className={styles.leafletContainer}
                             >
                                 <TileLayer

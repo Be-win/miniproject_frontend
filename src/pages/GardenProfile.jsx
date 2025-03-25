@@ -217,7 +217,7 @@ const GardenProfilePage = ({user}) => {
                         <h3>Request Land Allocation</h3>
                         <form onSubmit={handleLandRequest}>
                             <div className={styles.formGroup}>
-                                <label>Amount Needed (Max: {remainingLand.toFixed(2)} units)</label>
+                                <label>Amount Needed (Max: {remainingLand.toFixed(2)} cents)</label>
                                 <input
                                     type="number"
                                     step="0.01"

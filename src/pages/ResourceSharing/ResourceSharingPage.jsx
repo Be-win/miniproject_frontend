@@ -43,7 +43,27 @@ const ResourceSharingPage = ({ user }) => {
             });
             if (!res.ok) throw new Error('Failed to fetch resources');
             const data = await res.json();
-            setResources(data);
+
+            // New sorting logic
+            const sortedData = data.sort((a, b) => {
+                const now = new Date();
+                const aDate = new Date(a.available_to);
+                const bDate = new Date(b.available_to);
+                const aExpired = aDate < now;
+                const bExpired = bDate < now;
+
+                // Show non-expired first
+                if (aExpired && !bExpired) return 1;
+                if (!aExpired && bExpired) return -1;
+
+                // Sort non-expired by nearest expiration first
+                if (!aExpired && !bExpired) return aDate - bDate;
+
+                // Sort expired by most recent expiration first
+                return bDate - aDate;
+            });
+
+            setResources(sortedData);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -310,40 +330,71 @@ const ResourceSharingPage = ({ user }) => {
                     <div className={styles.loading}>Loading resources...</div>
                 ) : (
                     <div className={styles.resourceList}>
-                        {resources.map(resource => (
-                            <div key={resource.id} className={styles.resourceCard}>
-                                <h3>{resource.title}</h3>
-                                <p>{resource.description}</p>
-                                <div className={styles.meta}>
-                                    <span>Type: {resource.type}</span>
-                                    <span>Quantity: {resource.quantity}</span>
-                                    {resource.type === 'forSale' && (
-                                        <span>Price: ₹{(Number(resource.price) || 0).toFixed(2)}</span>
-                                    )}
-                                    <span>Available: {formatDate(resource.available_from)} - {formatDate(resource.available_to)}</span>
-                                    <span>Contact: {resource.contact}</span>
-                                    <span>Posted by: {resource.owner_name}</span>
+                        {resources.map(resource => {
+                            const isExpired = new Date(resource.available_to) < new Date();
+                            return (
+                                <div
+                                    key={resource.id}
+                                    className={`${styles.resourceCard} ${isExpired ? styles.expired : ''}`}
+                                >
+                                    <h3>
+                                        {resource.title}
+                                        {isExpired && <span className={styles.expiredLabel}>EXPIRED</span>}
+                                    </h3>
+                                    <p>{resource.description}</p>
+                                    <div className={styles.meta}>
+                                        <div className={styles.metaItem}>
+                                            <span className={styles.metaLabel}>Type:</span>
+                                            <span className={styles.metaValue}>{resource.type}</span>
+                                        </div>
+                                        <div className={styles.metaItem}>
+                                            <span className={styles.metaLabel}>Quantity:</span>
+                                            <span className={styles.metaValue}>{resource.quantity}</span>
+                                        </div>
+                                        {resource.type === 'forSale' && (
+                                            <div className={styles.metaItem}>
+                                                <span className={styles.metaLabel}>Price:</span>
+                                                <span className={styles.metaValue}>
+                                ₹{(Number(resource.price) || 0).toFixed(2)}
+                            </span>
+                                            </div>
+                                        )}
+                                        <div className={styles.metaItem}>
+                                            <span className={styles.metaLabel}>Available:</span>
+                                            <span className={styles.metaValue}>
+                            {formatDate(resource.available_from)} - {formatDate(resource.available_to)}
+                        </span>
+                                        </div>
+                                        <div className={styles.metaItem}>
+                                            <span className={styles.metaLabel}>Contact:</span>
+                                            <span className={styles.metaValue}>{resource.contact}</span>
+                                        </div>
+                                        <div className={styles.metaItem}>
+                                            <span className={styles.metaLabel}>Posted by:</span>
+                                            <span className={styles.metaValue}>{resource.owner_name}</span>
+                                        </div>
+                                    </div>
+                                    <div className={styles.actions}>
+                                        {resource.owner_id !== user?.id ? (
+                                            <button
+                                                className={styles.requestButton}
+                                                onClick={() => handleRequest(resource)}
+                                                disabled={isExpired}
+                                            >
+                                                {isExpired ? 'Expired' : 'Request'}
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className={styles.deleteButton}
+                                                onClick={() => handleDelete(resource.id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className={styles.actions}>
-                                    {resource.owner_id !== user?.id && (
-                                        <button
-                                            className={styles.requestButton}
-                                            onClick={() => handleRequest(resource)}
-                                        >
-                                            Request
-                                        </button>
-                                    )}
-                                    {resource.owner_id === user?.id && (
-                                        <button
-                                            className={styles.deleteButton}
-                                            onClick={() => handleDelete(resource.id)}
-                                        >
-                                            Delete
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </div>

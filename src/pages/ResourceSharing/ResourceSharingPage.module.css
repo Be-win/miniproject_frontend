@@ -111,6 +111,23 @@
     box-shadow: 0 12px 24px rgba(0,0,0,0.12);
 }
 
+.resourceCard.expired {
+    opacity: 0.7;
+    background: #fffafa;
+    border: 1px solid #ffcccc;
+}
+
+.expiredLabel {
+    background: #ff4444;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+
 .resourceCard h3 {
     margin: 0 0 1.2rem;
     color: #2c3e50;
@@ -140,6 +157,11 @@
     border-left: 3px solid #e0e0e0;
 }
 
+.metaItem {
+    display: flex;
+    flex-direction: column;
+}
+
 .meta span {
     display: flex;
     align-items: center;
@@ -152,6 +174,18 @@
     color: #4CAF50;
     font-size: 1.5rem;
     line-height: 0;
+}
+
+.metaLabel {
+    font-weight: 600;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.metaValue {
+    color: #333;
+    font-size: 0.95rem;
+    margin-top: 4px;
 }
 
 .actions {
@@ -185,6 +219,11 @@
 .requestButton:hover {
     background-color: #1e88e5;
     box-shadow: 0 6px 12px rgba(33,150,243,0.3);
+}
+
+.requestButton:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
 }
 
 .deleteButton {

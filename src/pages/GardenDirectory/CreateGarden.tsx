@@ -130,37 +130,38 @@ const CreateGardenPage: React.FC<{ user: any }> = ({ user }) => {
     const uploadImages = async (): Promise<string[]> => {
         const uploadedUrls: string[] = [];
 
-        // @ts-ignore
         for (const [index, file] of selectedFiles.entries()) {
             try {
                 const data = new FormData();
                 data.append('image', file);
 
-                // Add progress tracking
+                // Properly typed config object
                 const config = {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
-                    onUploadProgress: (progressEvent: any) => {
+                    onUploadProgress: (progressEvent: ProgressEvent) => {
                         const percent = Math.round(
                             (progressEvent.loaded * 100) / progressEvent.total
                         );
                         console.log(`Uploading image ${index + 1}: ${percent}%`);
-                    }
+                    },
+                    withCredentials: true // Moved inside config object
                 };
+
 
                 const response = await axios.post(
                     // @ts-ignore
                     `${import.meta.env.VITE_API_BASE_URL}/garden/upload-image`,
-                    data,
+                    data,// @ts-ignore
                     config
                 );
 
                 uploadedUrls.push(response.data.imageUrl);
             } catch (err) {
                 console.error('Image upload failed:', err);
-                throw new Error(`Failed to upload image ${index + 1}: ${err.message}`);
+                throw new Error(`Failed to upload image ${index + 1}: ${(err as Error).message}`);
             }
         }
         return uploadedUrls;

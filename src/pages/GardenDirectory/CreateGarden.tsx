@@ -1,6 +1,7 @@
 // @ts-ignore
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import imageCompression from 'browser-image-compression';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
 // @ts-ignore
@@ -65,35 +66,94 @@ const CreateGardenPage: React.FC<{ user: any }> = ({ user }) => {
         return null;
     };
 
-    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            setSelectedFiles([...e.target.files]);
+    const compressImage = async (file: File) => {
+        const options = {
+            maxSizeMB: 4,          // Maximum allowed by Vercel (4.5MB)
+            maxWidthOrHeight: 1920, // Maintain reasonable resolution
+            useWebWorker: true,     // Use web worker for faster compression
+            fileType: 'image/jpeg', // Convert all to JPEG for smaller size
+            initialQuality: 0.8     // 80% quality
+        };
+
+        try {
+            return await imageCompression(file, options);
+        } catch (error) {
+            console.error('Compression error:', error);
+            return file; // Fallback to original if compression fails
         }
     };
 
     // @ts-ignore
+    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
+
+        // @ts-ignore
+        const files = Array.from(e.target.files);
+        let compressedFiles: File[] = []; // Change from const to let
+
+        try {
+            setUploading(true);
+            setError('');
+
+            // Compress all files in parallel
+            const compressionPromises = files.map(file => compressImage(file));
+            // @ts-ignore
+            compressedFiles = await Promise.all(compressionPromises);
+        } catch (error) {
+            console.error('Compression failed:', error);
+            setError('Failed to process images. Please try again.');
+        } finally {
+            setUploading(false);
+        }
+
+        // Verify file sizes after compression
+        const validFiles = compressedFiles.filter(file => {
+            if (file.size > 4.5 * 1024 * 1024) {
+                setError(`Image ${file.name} is too large after compression. Please select a smaller image.`);
+                return false;
+            }
+            return true;
+        });
+
+        setSelectedFiles(prev => [...prev, ...validFiles]);
+    };
+
+
+    // @ts-ignore
     const uploadImages = async (): Promise<string[]> => {
         const uploadedUrls: string[] = [];
-        for (const file of selectedFiles) {
-            const data = new FormData();
-            data.append('image', file);
 
+        // @ts-ignore
+        for (const [index, file] of selectedFiles.entries()) {
             try {
+                const data = new FormData();
+                data.append('image', file);
+
+                // Add progress tracking
+                const config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    onUploadProgress: (progressEvent: any) => {
+                        const percent = Math.round(
+                            (progressEvent.loaded * 100) / progressEvent.total
+                        );
+                        console.log(`Uploading image ${index + 1}: ${percent}%`);
+                    }
+                };
+
                 const response = await axios.post(
                     // @ts-ignore
                     `${import.meta.env.VITE_API_BASE_URL}/garden/upload-image`,
                     data,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                            Authorization: `Bearer ${localStorage.getItem('token')}`,
-                        },
-                    }
+                    config
                 );
+
                 uploadedUrls.push(response.data.imageUrl);
             } catch (err) {
                 console.error('Image upload failed:', err);
-                throw new Error('Failed to upload images');
+                throw new Error(`Failed to upload image ${index + 1}: ${err.message}`);
             }
         }
         return uploadedUrls;

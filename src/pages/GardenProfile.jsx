@@ -1,12 +1,20 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {MapContainer, TileLayer, Marker, Popup} from "react-leaflet";
+import L from 'leaflet';
 import "leaflet/dist/leaflet.css";
 import styles from "./styles/GardenProfile.module.css";
 import AyurvedicCropSuggestions from "./AyurvedicCropSuggestions";
 import GardenersStats from "./GardenerStats";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+    iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
 
 const GardenProfilePage = ({user}) => {
     const {id} = useParams();
@@ -36,6 +44,19 @@ const GardenProfilePage = ({user}) => {
     const hasAllocation = userAllocation &&
         ['approved', 'active', 'pending_extension'].includes(allocationStatus) &&
         userAllocation.end_date;
+
+    useEffect(() => {
+        const defaultIcon = new L.Icon({
+            iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+            iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+            shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+        });
+
+        // Apply to all markers
+        L.Marker.prototype.options.icon = defaultIcon;
+    }, []);
 
     // Fetch reviews
     useEffect(() => {

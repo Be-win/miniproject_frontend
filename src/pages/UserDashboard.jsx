@@ -247,11 +247,11 @@ const GardensList = ({ gardens, onSelect }) => (
                                 <div className={styles.gardenLandStats}>
                                     <div className={styles.gardenLandStat}>
                                         <span className={styles.landStatLabel}>Total</span>
-                                        <span className={styles.landStatValue}>{garden.total_land} units</span>
+                                        <span className={styles.landStatValue}>{garden.total_land} cents</span>
                                     </div>
                                     <div className={styles.gardenLandStat}>
                                         <span className={styles.landStatLabel}>Allocated</span>
-                                        <span className={styles.landStatValue}>{garden.allocated_land} units</span>
+                                        <span className={styles.landStatValue}>{garden.allocated_land} cents</span>
                                     </div>
                                 </div>
                             </div>
@@ -321,7 +321,7 @@ const GardenDetails = ({ garden, onBack }) => {
                             <div className={styles.detailGrid}>
                                 <div className={styles.detailRow}>
                                     <span className={styles.detailLabel}>Requested Land:</span>
-                                    <span>{request.requested_land} units</span>
+                                    <span>{request.requested_land} cents</span>
                                 </div>
                                 <div className={styles.detailRow}>
                                     <span className={styles.detailLabel}>Duration:</span>
@@ -390,7 +390,7 @@ const GardenDetails = ({ garden, onBack }) => {
                             <div className={styles.detailGrid}>
                                 <div className={styles.detailRow}>
                                     <span className={styles.detailLabel}>Allocated Land:</span>
-                                    <span>{request.requested_land} units</span>
+                                    <span>{request.requested_land} cents</span>
                                 </div>
                                 <div className={styles.detailRow}>
                                     <span className={styles.detailLabel}>Status:</span>
@@ -426,7 +426,7 @@ const GardenDetails = ({ garden, onBack }) => {
                             <div className={styles.detailGrid}>
                                 <div className={styles.detailRow}>
                                     <span className={styles.detailLabel}>Allocated Land:</span>
-                                    <span>{request.requested_land} units</span>
+                                    <span>{request.requested_land} cents</span>
                                 </div>
                                 <div className={styles.detailRow}>
                                     <span className={styles.detailLabel}>Status:</span>
@@ -463,7 +463,7 @@ const LandRequestsList = ({requests}) => (
                             {request.status}
                         </span>
                     </p>
-                    <p>Requested Land: {request.requested_land} units</p>
+                    <p>Requested Land: {request.requested_land} cents</p>
                     <p>Period: {new Date(request.start_date).toLocaleDateString()} -{' '}
                         {new Date(request.end_date).toLocaleDateString()}</p>
                 </div>

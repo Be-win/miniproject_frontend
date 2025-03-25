@@ -68,18 +68,25 @@ const CreateGardenPage: React.FC<{ user: any }> = ({ user }) => {
 
     const compressImage = async (file: File) => {
         const options = {
-            maxSizeMB: 4,          // Maximum allowed by Vercel (4.5MB)
-            maxWidthOrHeight: 1920, // Maintain reasonable resolution
-            useWebWorker: true,     // Use web worker for faster compression
-            fileType: 'image/jpeg', // Convert all to JPEG for smaller size
-            initialQuality: 0.8     // 80% quality
+            maxSizeMB: 3.5, // Stay under Vercel's 4.5MB limit
+            maxWidthOrHeight: 1600,
+            useWebWorker: true,
+            fileType: 'image/webp', // Better compression than JPEG
+            initialQuality: 0.75
         };
 
         try {
-            return await imageCompression(file, options);
+            const compressed = await imageCompression(file, options);
+
+            // Additional size check
+            if (compressed.size > 4_500_000) {
+                throw new Error('Image too large after compression');
+            }
+
+            return compressed;
         } catch (error) {
             console.error('Compression error:', error);
-            return file; // Fallback to original if compression fails
+            throw error;
         }
     };
 

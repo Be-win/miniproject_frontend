@@ -130,6 +130,7 @@ const CreateGardenPage: React.FC<{ user: any }> = ({ user }) => {
     const uploadImages = async (): Promise<string[]> => {
         const uploadedUrls: string[] = [];
 
+        // @ts-ignore
         for (const [index, file] of selectedFiles.entries()) {
             try {
                 const data = new FormData();

@@ -13,7 +13,7 @@ const AyurvedicCropSuggestions = ({ garden }) => {
     useEffect(() => {
         const fetchSuggestions = async () => {
             try {
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
                 const prompt = `Act as an agricultural expert specializing in Ayurvedic medicine. 
           Suggest 5-7 Ayurvedic medicinal crops suitable for a garden with these features:
@@ -48,7 +48,7 @@ const AyurvedicCropSuggestions = ({ garden }) => {
                 const cleanedText = text.replace(/```json/g, '').replace(/```/g, '');
                 const data = JSON.parse(cleanedText);
                 //console.log(data);
-
+                console.log(data);
                 setSuggestions(data);
             } catch (err) {
                 setError("Failed to generate suggestions. Please try again later.");

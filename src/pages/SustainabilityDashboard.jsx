@@ -108,13 +108,13 @@ const ArticleList = ({ articles, onUpvote, onDownvote, showAll, toggleShowAll, i
                                 className={`${styles.upvoteButton} ${article.has_upvoted ? styles.active : ''}`}
                                 onClick={() => onUpvote(article.id)}
                             >
-                                ↑ {article.upvotes}
+                                👍 {article.upvotes}
                             </button>
                             <button
                                 className={`${styles.downvoteButton} ${article.has_downvoted ? styles.active : ''}`}
                                 onClick={() => onDownvote(article.id)}
                             >
-                                ↓ {article.downvotes}
+                                👎 {article.downvotes}
                             </button>
                         </div>
                     </div>
@@ -140,36 +140,17 @@ const SustainabilityDashboard = ({ user }) => {
 
     useEffect(() => {
         const getDailyTopic = async () => {
-            const today = new Date().toLocaleDateString();
-            const cachedTopic = localStorage.getItem('dailyTopic');
-            const cachedDate = localStorage.getItem('dailyTopicDate');
-
-            // Return cached topic if it exists and is from today
-            if (cachedTopic && cachedDate === today) {
-                setTopicOfTheDay(JSON.parse(cachedTopic));
-                setIsLoadingTopic(false);
-                return;
-            }
-
-            // Fetch new topic from API
             try {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_BASE_URL}/sustainability/topic-of-the-day`
                 );
-                const newTopic = response.data?.topic;
-
-                // Cache the new topic with today's date
-                localStorage.setItem('dailyTopic', JSON.stringify(newTopic));
-                localStorage.setItem('dailyTopicDate', today);
-
-                setTopicOfTheDay(newTopic);
+                setTopicOfTheDay(response.data?.topic);
             } catch (error) {
                 setError("Failed to fetch Topic of the Day.");
             } finally {
                 setIsLoadingTopic(false);
             }
         };
-
         getDailyTopic();
     }, []);
 

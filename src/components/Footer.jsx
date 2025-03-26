@@ -8,7 +8,7 @@ const Footer = () => {
             <div className="footer-container">
                 {/* Logo and About */}
                 <div className="footer-section about">
-                    <h2>Community Garden</h2>
+                    <h2>Willow & Thrive</h2>
                     <p>
                         Connecting gardeners and communities to grow together and make a difference.
                     </p>
@@ -28,7 +28,7 @@ const Footer = () => {
                 {/* Contact Info */}
                 <div className="footer-section contact">
                     <h3>Contact Us</h3>
-                    <p>Email: support@communitygarden.com</p>
+                    <p>Email: support@willowandthrive.shop</p>
                     <p>Phone: +1 (555) 123-4567</p>
                     <div className="social-icons">
                         <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><FaFacebook /></a>

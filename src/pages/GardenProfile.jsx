@@ -36,6 +36,11 @@ const GardenProfilePage = ({user}) => {
     const [reviews, setReviews] = useState([]);
     const [newReview, setNewReview] = useState({ rating: 0, comment: '' });
     const [showAllReviews, setShowAllReviews] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
+    const [reportData, setReportData] = useState({
+        subject: '',
+        description: ''
+    });
 
     const userAllocation = userAllocations.find(a =>
         Number(a.garden_id) === Number(garden?.id)
@@ -217,6 +222,29 @@ const GardenProfilePage = ({user}) => {
         }
     };
 
+    const handleReportSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/garden/${id}/report`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                },
+                body: JSON.stringify(reportData)
+            });
+
+            if (!response.ok) throw new Error("Failed to submit report");
+
+            alert("Report submitted successfully!");
+            setShowReportModal(false);
+            setReportData({ subject: '', description: '' });
+        } catch (error) {
+            console.error("Report error:", error);
+            alert(error.message);
+        }
+    };
+
     if (loading || allocationsLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
     if (!garden) return <div>Garden not found</div>;
@@ -362,6 +390,46 @@ const GardenProfilePage = ({user}) => {
                 </div>
             )}
 
+            {showReportModal && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.requestModal}>
+                        <h3>Report Garden</h3>
+                        <form onSubmit={handleReportSubmit}>
+                            <div className={styles.formGroup}>
+                                <label>Subject</label>
+                                <input
+                                    type="text"
+                                    value={reportData.subject}
+                                    onChange={(e) => setReportData({...reportData, subject: e.target.value})}
+                                    required
+                                />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>Description</label>
+                                <textarea
+                                    value={reportData.description}
+                                    onChange={(e) => setReportData({...reportData, description: e.target.value})}
+                                    required
+                                    rows="4"
+                                />
+                            </div>
+                            <div className={styles.modalButtons}>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowReportModal(false)}
+                                    className={styles.cancelButton}
+                                >
+                                    Cancel
+                                </button>
+                                <button type="submit" className={styles.submitButton}>
+                                    Submit Report
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
             <div className={styles.gardenProfileContainer}>
                 {/* Map Section - Full width */}
                 <div className={styles.mapSection}>
@@ -390,6 +458,14 @@ const GardenProfilePage = ({user}) => {
                         </p>
                         <p><strong>Address:</strong> {garden.address}</p>
                         <p>{garden.description}</p>
+                        {!isOwner && user && (
+                            <button
+                                className={styles.reportButton}
+                                onClick={() => setShowReportModal(true)}
+                            >
+                                Report Garden
+                            </button>
+                        )}
 
                         {/* Garden Features Section */}
                         <div className={styles.gardenFeatures}>

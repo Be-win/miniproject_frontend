@@ -1,0 +1,114 @@
+.adminContainer {
+    max-width: 1400px;
+    margin: 80px auto;
+    padding: 20px;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #2c3e50;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 2rem;
+}
+
+.statCard {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.statCard h3 {
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.statCard p {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.chartsSection {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 20px;
+    margin-bottom: 2rem;
+}
+
+.chartCard {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.dataSection {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    gap: 20px;
+}
+
+.tableCard {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+.dataTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.dataTable th,
+.dataTable td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.dataTable th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #444;
+}
+
+.status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-transform: capitalize;
+}
+
+.status.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status.resolved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status.closed {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: #666;
+}

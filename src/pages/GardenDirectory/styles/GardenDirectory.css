@@ -174,25 +174,32 @@
 
 @media (max-width: 768px) {
     .controls-section {
-        flex-direction: column;
-        align-items: stretch;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
         gap: 0.75rem;
         padding: 0 0.5rem;
     }
     
-    .controls-section{
-        height: 20px;
-    }
-
+    
     .search-input,
-    .type-filter,
+    .type-filter {
+        flex: 1;
+        height: 20px;
+        padding: 0 0.6rem;
+        font-size: 0.9rem;
+        margin-bottom: 0;
+    }
+    
+    
     .create-garden-btn {
+        flex-basis: 100%;
         width: 100%;
         padding: 0.6rem;
         font-size: 0.9rem;
-        margin-bottom: 0.5rem;
+        margin-top: 0.75rem;
     }
-
+    
     .gardens-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;

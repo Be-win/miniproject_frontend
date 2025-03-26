@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import styles from './ResourceSharingPage.module.css';
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { format, parseISO } from 'date-fns';
+import {format, parseISO} from 'date-fns';
 
-const ResourceSharingPage = ({ user }) => {
+const ResourceSharingPage = ({user}) => {
     const [resources, setResources] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
     const [showRequestForm, setShowRequestForm] = useState(false);
@@ -174,7 +174,7 @@ const ResourceSharingPage = ({ user }) => {
             }
 
             setShowRequestForm(false);
-            setRequestData({ message: '', contact: '' });
+            setRequestData({message: '', contact: ''});
             alert('Request submitted successfully!');
         } catch (err) {
             setError(err.message);
@@ -245,7 +245,10 @@ const ResourceSharingPage = ({ user }) => {
                                     type="number"
                                     min="1"
                                     value={newResource.quantity}
-                                    onChange={(e) => setNewResource({...newResource, quantity: parseInt(e.target.value)})}
+                                    onChange={(e) => setNewResource({
+                                        ...newResource,
+                                        quantity: parseInt(e.target.value)
+                                    })}
                                     required
                                 />
                             </div>
@@ -257,7 +260,10 @@ const ResourceSharingPage = ({ user }) => {
                                         min="0.01"
                                         step="0.01"
                                         value={newResource.price}
-                                        onChange={(e) => setNewResource({...newResource, price: parseFloat(e.target.value)})}
+                                        onChange={(e) => setNewResource({
+                                            ...newResource,
+                                            price: parseFloat(e.target.value)
+                                        })}
                                         required
                                     />
                                 </div>
@@ -347,28 +353,33 @@ const ResourceSharingPage = ({ user }) => {
                                             <span className={styles.metaLabel}>Type:</span>
                                             <span className={styles.metaValue}>{resource.type}</span>
                                         </div>
+
                                         <div className={styles.metaItem}>
                                             <span className={styles.metaLabel}>Quantity:</span>
                                             <span className={styles.metaValue}>{resource.quantity}</span>
                                         </div>
+
                                         {resource.type === 'forSale' && (
                                             <div className={styles.metaItem}>
                                                 <span className={styles.metaLabel}>Price:</span>
                                                 <span className={styles.metaValue}>
-                                ₹{(Number(resource.price) || 0).toFixed(2)}
-                            </span>
+                                                    ₹{(Number(resource.price) || 0).toFixed(2)}
+                                                </span>
                                             </div>
                                         )}
+
                                         <div className={styles.metaItem}>
                                             <span className={styles.metaLabel}>Available:</span>
                                             <span className={styles.metaValue}>
-                            {formatDate(resource.available_from)} - {formatDate(resource.available_to)}
-                        </span>
+                                                {formatDate(resource.available_from)} - {formatDate(resource.available_to)}
+                                            </span>
                                         </div>
+
                                         <div className={styles.metaItem}>
                                             <span className={styles.metaLabel}>Contact:</span>
                                             <span className={styles.metaValue}>{resource.contact}</span>
                                         </div>
+
                                         <div className={styles.metaItem}>
                                             <span className={styles.metaLabel}>Posted by:</span>
                                             <span className={styles.metaValue}>{resource.owner_name}</span>
@@ -398,7 +409,7 @@ const ResourceSharingPage = ({ user }) => {
                     </div>
                 )}
             </div>
-            <Footer />
+            <Footer/>
         </div>
     );
 };

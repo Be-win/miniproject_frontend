@@ -117,6 +117,10 @@
     border: 1px solid #ffcccc;
 }
 
+.resourceCard.expired .metaValue {
+    color: #888;
+}
+
 .expiredLabel {
     background: #ff4444;
     color: white;
@@ -147,45 +151,60 @@
 .meta {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-    color: #666;
-    font-size: 0.95rem;
-    margin-bottom: 1.5rem;
-    background-color: #f8f9fa;
-    padding: 1.2rem;
-    border-radius: 8px;
-    border-left: 3px solid #e0e0e0;
+    gap: 12px;
+    padding: 1rem 0;
+}
+
+
+.metaRow {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 .metaItem {
     display: flex;
-    flex-direction: column;
-}
-
-.meta span {
-    display: flex;
+    justify-content: normal;
     align-items: center;
-    gap: 0.8rem;
-    position: relative;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
 }
 
-.meta span::before {
-    content: '•';
-    color: #4CAF50;
-    font-size: 1.5rem;
-    line-height: 0;
+.metaItem:last-child {
+    border-bottom: none;
 }
+
+/*.meta span {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 0.8rem;*/
+/*    position: relative;*/
+/*}*/
+
+/*.meta span::before {*/
+/*    content: '•';*/
+/*    color: #4CAF50;*/
+/*    font-size: 1.5rem;*/
+/*    line-height: 0;*/
+/*}*/
 
 .metaLabel {
     font-weight: 600;
-    color: #666;
-    font-size: 0.9rem;
+    color: #444;
+    font-size: 0.95rem;
 }
 
 .metaValue {
-    color: #333;
+    color: #666;
     font-size: 0.95rem;
-    margin-top: 4px;
+    padding-left: 0.5rem;
+    max-width: 60%;
+}
+
+/* Price styling */
+.metaItem:nth-child(3) .metaValue {
+    color: #2e7d32;
+    font-weight: 600;
 }
 
 .actions {

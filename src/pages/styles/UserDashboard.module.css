@@ -280,13 +280,18 @@
 
 .userAvatar {
     font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #f1f5f9;
     border-radius: 50%;
+}
+
+.userAvatar:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
 }
 
 .detailGrid {

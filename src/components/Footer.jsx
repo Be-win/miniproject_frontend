@@ -41,7 +41,7 @@ const Footer = () => {
 
             {/* Footer Bottom */}
             <div className="footer-bottom">
-                <p>&copy; {new Date().getFullYear()} Community Garden. All rights reserved.</p>
+                <p>&copy; {new Date().getFullYear()} Willow & Thrive. All rights reserved.</p>
             </div>
         </footer>
     );

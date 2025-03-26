@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import axios from 'axios';
@@ -315,7 +316,21 @@ const GardenDetails = ({ garden, onBack }) => {
                     activeRequests.map(request => (
                         <div key={request.id} className={styles.requestCard}>
                             <div className={styles.userHeader}>
-                                <span className={styles.userAvatar}>👤</span>
+                                <Link to={`/profile/${request.user.id}`}>
+                                    {request.user.profile_pic ? (
+                                        <img
+                                            src={request.user.profile_pic}
+                                            alt={`${request.user.name}'s profile`}
+                                            className={styles.userAvatar}
+                                        />
+                                    ) : (
+                                        <img
+                                            src={`https://avatar.iran.liara.run/username?username=${request.user.name}`}
+                                            className={styles.userAvatar}
+                                            alt="Profile"
+                                        />
+                                    )}
+                                </Link>
                                 <h4>{request.user.name}</h4>
                             </div>
                             <div className={styles.detailGrid}>
@@ -370,7 +385,7 @@ const GardenDetails = ({ garden, onBack }) => {
             </div>
 
             <div className={styles.detailsSection}>
-                <h3>👩🌾 Current Gardeners</h3>
+                <h3>👩 Current Gardeners</h3>
                 {volunteers.length === 0 ? (
                     <div className={styles.card}>
                         <p className={styles.mutedText}>No active volunteers for this garden</p>
@@ -379,7 +394,21 @@ const GardenDetails = ({ garden, onBack }) => {
                     volunteers.map(request => (
                         <div key={request.id} className={styles.requestCard}>
                             <div className={styles.userHeader}>
-                                <span className={styles.userAvatar}>👤</span>
+                                <Link to={`/profile/${request.user.id}`}>
+                                    {request.user.profile_pic ? (
+                                        <img
+                                            src={request.user.profile_pic}
+                                            alt={`${request.user.name}'s profile`}
+                                            className={styles.userAvatar}
+                                        />
+                                    ) : (
+                                        <img
+                                            src={`https://avatar.iran.liara.run/username?username=${request.user.name}`}
+                                            className={styles.userAvatar}
+                                            alt="Profile"
+                                        />
+                                    )}
+                                </Link>
                                 <div>
                                     <h4>{request.user.name}</h4>
                                     <p className={styles.smallText}>
@@ -414,7 +443,21 @@ const GardenDetails = ({ garden, onBack }) => {
                     expiredRequests.map(request => (
                         <div key={request.id} className={styles.requestCard}>
                             <div className={styles.userHeader}>
-                                <span className={styles.userAvatar}>👤</span>
+                                <Link to={`/profile/${request.user.id}`}>
+                                    {request.user.profile_pic ? (
+                                        <img
+                                            src={request.user.profile_pic}
+                                            alt={`${request.user.name}'s profile`}
+                                            className={styles.userAvatar}
+                                        />
+                                    ) : (
+                                        <img
+                                            src={`https://avatar.iran.liara.run/username?username=${request.user.name}`}
+                                            className={styles.userAvatar}
+                                            alt="Profile"
+                                        />
+                                    )}
+                                </Link>
                                 <div>
                                     <h4>{request.user.name}</h4>
                                     <p className={styles.smallText}>

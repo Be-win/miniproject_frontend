@@ -122,7 +122,7 @@ const GardenProfilePage = ({user}) => {
                 }),
             });
 
-            if (!response.ok) throw new Error('Failed to submit review');
+            if (!response.ok) throw new Error('Failed to submit review, Ensure All Fields are Filled');
 
             const data = await response.json();
             setReviews([data, ...reviews]);
@@ -534,7 +534,7 @@ const GardenProfilePage = ({user}) => {
                         !hasReviewed && (
                             <div className={styles.reviewForm}>
                                 <h3>Write a Review</h3>
-                                <form onSubmit={handleReviewSubmit}>
+                                <form onSubmit={handleReviewSubmit} className={styles.formContainer}>
                                     <div className={styles.ratingInput}>
                                         {[1, 2, 3, 4, 5].map((star) => (
                                             <button
@@ -552,6 +552,7 @@ const GardenProfilePage = ({user}) => {
                                         onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
                                         placeholder="Share your experience..."
                                         required
+                                        className={styles.reviewTextarea}
                                     />
                                     <button type="submit" className={styles.submitReviewButton}>
                                         Submit Review

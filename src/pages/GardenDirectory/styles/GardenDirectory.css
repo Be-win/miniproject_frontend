@@ -185,7 +185,7 @@
     .search-input,
     .type-filter {
         flex: 1;
-        height: 20px;
+        height: 40px;
         padding: 0 0.6rem;
         font-size: 0.9rem;
         margin-bottom: 0;

@@ -179,6 +179,10 @@
         gap: 0.75rem;
         padding: 0 0.5rem;
     }
+    
+    .controls-section{
+        height: 20px;
+    }
 
     .search-input,
     .type-filter,
@@ -187,7 +191,6 @@
         padding: 0.6rem;
         font-size: 0.9rem;
         margin-bottom: 0.5rem;
-        height: 20px;
     }
 
     .gardens-grid {

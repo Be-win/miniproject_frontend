@@ -23,12 +23,9 @@ const AdminDashboard = ({ user }) => {
         Closed: '#607D8B'
     };
 
-    // Process data for visualizations
     const processChartData = () => {
-        // Land requests by status with sorted order
         const statusOrder = ['pending', 'approved', 'active', 'expired', 'rejected'];
         const landByStatus = landRequests.reduce((acc, request) => {
-            // Convert requested_land to number before summing
             const landValue = parseFloat(request.requested_land) || 0;
             acc[request.status] = (acc[request.status] || 0) + landValue;
             return acc;
@@ -43,7 +40,6 @@ const AdminDashboard = ({ user }) => {
 
         console.log(landChartData);
 
-        // Resource requests distribution
         const resourceStatusCounts = resourceRequests.reduce((acc, request) => {
             acc[request.status] = (acc[request.status] || 0) + 1;
             return acc;
@@ -55,7 +51,6 @@ const AdminDashboard = ({ user }) => {
                 count
             }));
 
-        // Sort reports and requests by date
         const sortedReports = [...reports].sort((a, b) =>
             new Date(b.created_at) - new Date(a.created_at)
         );
@@ -135,7 +130,6 @@ const AdminDashboard = ({ user }) => {
                     </div>
                 </div>
 
-                {/* Charts Section */}
                 <div className={styles.chartsSection}>
                     <div className={styles.chartCard}>
                         <h3>Land Requests by Status</h3>
@@ -231,7 +225,6 @@ const AdminDashboard = ({ user }) => {
                     </div>
                 </div>
 
-                {/* Data Tables */}
                 <div className={styles.dataSection}>
                     <div className={styles.tableCard}>
                         <h3>Recent Reports</h3>

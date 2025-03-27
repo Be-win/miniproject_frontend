@@ -44,11 +44,9 @@ const AyurvedicCropSuggestions = ({ garden }) => {
                 const response = await result.response;
                 const text = response.text();
 
-                // Clean the response (Gemini sometimes adds markdown-style code blocks)
                 const cleanedText = text.replace(/```json/g, '').replace(/```/g, '');
                 const data = JSON.parse(cleanedText);
                 //console.log(data);
-                console.log(data);
                 setSuggestions(data);
             } catch (err) {
                 setError("Failed to generate suggestions. Please try again later.");

@@ -53,7 +53,7 @@ const GardenDirectoryPage: React.FC<{ user: User | null }> = ({ user }) => {
 
             if (!response.ok) throw new Error("Failed to fetch gardens");
             const data = await response.json();
-            console.log(data);
+            //console.log(data);
 
             // Match the backend response structure
             return {
